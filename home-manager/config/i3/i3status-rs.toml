@@ -1,0 +1,82 @@
+[theme]
+theme = "semi-native"
+[theme.overrides]
+idle_fg = "#d3d7eb"
+info_fg = "#d3d7eb"
+good_fg = "#9ece6a"
+warning_fg = "#e0af68"
+critical_fg = "#ea4e6b"
+
+[icons]
+icons = "awesome6"
+
+[[block]]
+block = "focused_window"
+[block.format]
+full = " $title.str(max_w:80){ $marks.str(max_w:80)|} | "
+short = " $title.str(max_w:20){ $marks.str(max_w:20)|} | "
+
+[[block]]
+block = "net" 
+format_alt = " $icon {$signal_strength $ssid $frequency|Wired} via $device "
+interval = 5
+[block.format]
+full = " $icon {$signal_strength $ssid @$ip|Wired @$ip} $graph_down "
+short = " $icon {$ssid|Wired} "
+
+[[block]]
+block = "memory"
+warning_mem = 80
+warning_swap = 80
+critical_mem = 95
+critical_swap = 95
+format = " $icon $mem_total_used_percents.eng(w:2) "
+format_alt = " $icon_swap $swap_used_percents.eng(w:2) "
+
+[[block]]
+block = "disk_space"
+path = "/"
+[block.format]
+full = " $icon $path $available "
+short = " $path $available "
+
+[[block]]
+block = "disk_space"
+path = "~"
+[block.format]
+full = " $icon ~ $available "
+short = " ~ $available "
+
+[[block]]
+block = "cpu"
+interval = 5
+[block.format]
+full = " $icon $barchart $utilization $frequency "
+short = " $icon $utilization "
+
+[[block]]
+block = "temperature"
+interval = 5
+scale = "celsius"
+format = " $icon $average "
+format_alt = " $icon $min min, $average avg, $max max "
+chip = "*-isa-*"
+
+[[block]]
+block = "sound"
+format = " $icon {$volume.eng(w:3) |} "
+[block.theme_overrides]
+idle_fg = "#bb9af7"
+
+[[block]]
+block = "battery"
+driver = "upower"
+[block.format]
+full = " $icon $percentage $time "
+
+[[block]]
+block = "time"
+interval = 1
+[block.format]
+full = " $icon $timestamp.datetime(f:'%a %Y-%m-%d %T %z') " 
+short = " $icon $timestamp.datetime(f:'%Y-%m-%d %T') "
