@@ -12,11 +12,11 @@
       },
       "locked": {
         "dir": "nix-flakes/firacode",
-        "lastModified": 1697097923,
-        "narHash": "sha256-TFty8to7wRPx5vRpH6+qfbXyxEE7aXXlNf4SQw+fxV0=",
+        "lastModified": 1697126015,
+        "narHash": "sha256-DGnnPcEjwtUR7kuOfOES2fSnOmbt3u9bp2xdXTqbsE0=",
         "owner": "achuie",
         "repo": "dotfiles",
-        "rev": "dbd308cb34cb301304b3a4276ba9e58009a1860a",
+        "rev": "a23ba14f016dd28b9993d747db9019eb38169586",
         "type": "github"
       },
       "original": {
@@ -86,11 +86,11 @@
       },
       "locked": {
         "dir": "nix-flakes/iosevka",
-        "lastModified": 1697097923,
-        "narHash": "sha256-TFty8to7wRPx5vRpH6+qfbXyxEE7aXXlNf4SQw+fxV0=",
+        "lastModified": 1697126015,
+        "narHash": "sha256-DGnnPcEjwtUR7kuOfOES2fSnOmbt3u9bp2xdXTqbsE0=",
         "owner": "achuie",
         "repo": "dotfiles",
-        "rev": "dbd308cb34cb301304b3a4276ba9e58009a1860a",
+        "rev": "a23ba14f016dd28b9993d747db9019eb38169586",
         "type": "github"
       },
       "original": {

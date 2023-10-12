@@ -14,7 +14,7 @@
 
   swapDevices = [{ device = "/swapfile"; }];
 
-  fileSystems."/home/mujin/vm-share" = {
+  fileSystems."/home/achuie/vm-share" = {
     fsType = "vboxsf";
     device = "vm-share";
     options = [ "rw" "nofail" ];
@@ -67,7 +67,7 @@
   # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.mujin = {
+  users.users.achuie = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" ];
   };
@@ -97,7 +97,7 @@
   # };
   services.xserver = {
     enable = true;
-    autorun = false;
+    autorun = true;
     desktopManager.xterm.enable = false;
     displayManager = { lightdm.enable = true; defaultSession = "none+i3"; };
     windowManager.i3 = {

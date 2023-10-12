@@ -14,16 +14,16 @@
     };
   };
   home = {
-    username = "mujin";
-    homeDirectory = "/home/mujin";
+    username = "achuie";
+    homeDirectory = "/home/achuie";
     packages = with pkgs; [ font-awesome args.firacode args.iosevka lm_sensors ];
   };
 
   programs.home-manager.enable = true;
   programs.git = {
     enable = true;
-    userName = "mujin";
-    userEmail = "mujin@mujin.co.jp";
+    userName = "achuie";
+    userEmail = "achuie@protonmail.com";
   };
 
   # services.gpg-agent = {

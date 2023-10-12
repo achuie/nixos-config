@@ -35,7 +35,7 @@
         system = "x86_64-linux";
       in
       {
-        "mujin@nixtest" = home-manager.lib.homeManagerConfiguration {
+        "achuie@nixtest" = home-manager.lib.homeManagerConfiguration {
           pkgs = nixpkgs.legacyPackages.${system};
           extraSpecialArgs = {
             inherit (self) inputs outputs;

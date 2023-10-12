@@ -48,7 +48,7 @@
           {
             italic = false,
             intensity = 'Bold',
-            font = wezterm.font('Fira Code', { weight = 'Bold' }),
+            font = wezterm.font('Fira Code Custom', { weight = 'Bold' }),
           },
           {
             italic = true,
@@ -61,8 +61,8 @@
           },
         },
 
-        front_end = 'WebGpu',
-        webgpu_power_preference = 'LowPower',
+        -- front_end = 'WebGpu',
+        -- webgpu_power_preference = 'LowPower',
 
         window_background_opacity = 0.9,
 
