@@ -69,7 +69,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.mujin = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" ];
   };
 
   nix = {
@@ -87,11 +87,7 @@
   #   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #   wget
   # ];
-  environment.systemPackages = with pkgs; [ vim git ];
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
-  };
+  environment.systemPackages = with pkgs; [ vim git lynx ];
   # programs.hyprland = {
   #   enable = true;
   #   xwayland = {
