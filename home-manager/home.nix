@@ -5,6 +5,8 @@
     ./config/i3/config.nix
     ./config/neovim/config.nix
     ./config/wezterm/config.nix
+    ./config/tmux/config.nix
+    ./config/zsh/config.nix
   ];
   nixpkgs = {
     overlays = [];
@@ -16,7 +18,14 @@
   home = {
     username = "achuie";
     homeDirectory = "/home/achuie";
-    packages = with pkgs; [ font-awesome args.firacode args.iosevka lm_sensors ];
+    file.".zsh/functions/prompt_achuie_setup".source = ./config/zsh/achuie.zsh;
+    packages = with pkgs; [
+      font-awesome
+      args.firacode
+      args.iosevka
+      lm_sensors
+      skim
+    ];
   };
 
   programs.home-manager.enable = true;
