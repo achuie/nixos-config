@@ -12,8 +12,6 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  swapDevices = [{ device = "/swapfile"; }];
-
   fileSystems."/home/achuie/vm-share" = {
     fsType = "vboxsf";
     device = "vm-share";
@@ -70,7 +68,9 @@
   users.users.achuie = {
     isNormalUser = true;
     extraGroups = [ "wheel" "networkmanager" ];
+    shell = pkgs.zsh;
   };
+  programs.zsh.enable = true;
 
   nix = {
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
@@ -87,7 +87,7 @@
   #   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #   wget
   # ];
-  environment.systemPackages = with pkgs; [ vim git lynx ];
+  environment.systemPackages = with pkgs; [ vim git lynx st xclip fd ripgrep ];
   # programs.hyprland = {
   #   enable = true;
   #   xwayland = {
