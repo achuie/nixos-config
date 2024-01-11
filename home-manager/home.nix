@@ -18,7 +18,6 @@
   home = {
     username = "achuie";
     homeDirectory = "/home/achuie";
-    file.".zsh/functions/prompt_achuie_setup".source = ./config/zsh/achuie.zsh;
     packages = with pkgs; [
       font-awesome
       args.firacode
