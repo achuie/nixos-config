@@ -13,6 +13,9 @@
       # 256 colors
       set -ga terminal-overrides ",xterm-256color:Tc"
 
+      # Override login shell default
+      set -g default-command "$SHELL"
+
       # Vim bindings for switching panes
       bind h select-pane -L
       bind j select-pane -D
