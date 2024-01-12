@@ -70,7 +70,10 @@
     extraGroups = [ "wheel" "networkmanager" ];
     shell = pkgs.zsh;
   };
-  programs.zsh.enable = true;
+  programs.zsh = {
+    enable = true;
+    enableGlobalCompInit = false;
+  };
 
   nix = {
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
