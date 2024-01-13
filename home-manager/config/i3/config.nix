@@ -15,6 +15,7 @@ let
   ws10 = "10";
 in
 {
+  home.file.".xinitrc".source = ./xinitrc;
   xsession.windowManager.i3 = {
     enable = true;
     config = {

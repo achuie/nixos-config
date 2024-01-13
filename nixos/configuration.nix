@@ -100,9 +100,10 @@
   # };
   services.xserver = {
     enable = true;
-    autorun = true;
+    autorun = false;
+    exportConfiguration = true;
     desktopManager.xterm.enable = false;
-    displayManager = { lightdm.enable = true; defaultSession = "none+i3"; };
+    displayManager.startx.enable = true;
     windowManager.i3 = {
       enable = true;
       extraPackages = with pkgs; [ dmenu-rs i3status-rust ];
