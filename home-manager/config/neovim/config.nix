@@ -9,11 +9,15 @@
       recursive = true;
       source = pkgs.vimPlugins.nvim-treesitter.withAllGrammars;
     };
+    ".local/share/nvim/nix/telescope-fzf-native.nvim" = {
+      recursive = true;
+      source = pkgs.vimPlugins.telescope-fzf-native-nvim;
+    };
   };
   # Treesitter needs gcc; Mason needs cargo.
   home.packages = with pkgs; [ gcc cargo ];
   programs.neovim = {
     enable = true;
-    plugins = with pkgs.vimPlugins; [ nvim-treesitter.withAllGrammars ];
+    plugins = with pkgs.vimPlugins; [ nvim-treesitter.withAllGrammars telescope-fzf-native-nvim ];
   };
 }
