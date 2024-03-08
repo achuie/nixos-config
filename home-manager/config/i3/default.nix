@@ -15,6 +15,7 @@ let
   ws10 = "10";
 in
 {
+  home.file.".xinitrc".source = ./xinitrc;
   xsession.windowManager.i3 = {
     enable = true;
     config = {
@@ -22,7 +23,7 @@ in
       floating.modifier = "${modifier}";
       menu = ''${pkgs.dmenu-rs}/bin/dmenu_run --font "Fira Code Custom"'';
       workspaceAutoBackAndForth = true;
-      # fonts = { names = [ "Fira Code Custom" ]; size = 8.0; };
+      fonts = { names = [ "Fira Code Custom" ]; size = 8.0; };
       keybindings = lib.mkOptionDefault {
         # #i3-sensible-terminal
         "${modifier}+Return" = "exec wezterm";
@@ -217,7 +218,11 @@ in
         };
       };
       bars = [
-        { position = "bottom"; statusCommand = "${pkgs.i3status-rust}/bin/i3status-rs ${./i3status-rust.toml}"; }
+        {
+          position = "bottom";
+          fonts = { names = [ "Fira Code Custom" "Font Awesome 6 Free" ]; size = 10.0; };
+          statusCommand = "${pkgs.i3status-rust}/bin/i3status-rs ${./i3status-rust.toml}";
+        }
       ];
     };
   };

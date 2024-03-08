@@ -12,9 +12,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  swapDevices = [{ device = "/swapfile"; }];
-
-  fileSystems."/home/mujin/vm-share" = {
+  fileSystems."/home/achuie/vm-share" = {
     fsType = "vboxsf";
     device = "vm-share";
     options = [ "rw" "nofail" ];
@@ -67,9 +65,14 @@
   # services.xserver.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.mujin = {
+  users.users.achuie = {
     isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "networkmanager" ];
+    shell = pkgs.zsh;
+  };
+  programs.zsh = {
+    enable = true;
+    enableGlobalCompInit = false;
   };
 
   nix = {
@@ -87,11 +90,7 @@
   #   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #   wget
   # ];
-  environment.systemPackages = with pkgs; [ vim git ];
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
-  };
+  environment.systemPackages = with pkgs; [ vim git lynx st xclip fd ripgrep ];
   # programs.hyprland = {
   #   enable = true;
   #   xwayland = {
@@ -102,8 +101,9 @@
   services.xserver = {
     enable = true;
     autorun = false;
+    exportConfiguration = true;
     desktopManager.xterm.enable = false;
-    displayManager = { lightdm.enable = true; defaultSession = "none+i3"; };
+    displayManager.startx.enable = true;
     windowManager.i3 = {
       enable = true;
       extraPackages = with pkgs; [ dmenu-rs i3status-rust ];
