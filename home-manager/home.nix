@@ -2,11 +2,11 @@
 
 {
   imports = [
-    ./config/i3/config.nix
-    ./config/neovim/config.nix
-    ./config/wezterm/config.nix
-    ./config/tmux/config.nix
-    ./config/zsh/config.nix
+    ./config/i3
+    ./config/neovim
+    ./config/wezterm
+    ./config/tmux
+    ./config/zsh
   ];
   nixpkgs = {
     overlays = [];
