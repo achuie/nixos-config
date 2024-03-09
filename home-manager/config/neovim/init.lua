@@ -261,6 +261,9 @@ vim.opt.listchars = { tab = '›—', extends = '→', precedes = '←', nbsp = 
 vim.o.splitbelow = true
 vim.o.splitright = true
 
+-- Mujin controller access
+vim.g.netrw_scp_cmd = 'scp -q -i ~/.ssh/mujin/id_rsa -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'
+
 
 --[[ Keymaps ]]
 
@@ -577,7 +580,7 @@ local servers = {
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
   lua_ls = {
     Lua = {
-      workspace = { checkThirdParty = "Disable" },
+      workspace = { checkThirdParty = false },
       telemetry = { enable = false },
     },
   },
