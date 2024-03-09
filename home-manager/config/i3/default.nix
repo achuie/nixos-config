@@ -177,6 +177,24 @@ in
         "${modifier}+r" = ''mode "resize"'';
         "${modifier}+m" = ''mode "music"'';
       };
+      startup = [
+        { command = ''wezterm start --class "wezterm-system"''; notification = false; }
+        { command = ''wezterm start --class "wezterm-audio" -- zsh -is eval 'pulsemixer' ''; notification = false; }
+      ];
+      window.commands = [
+        {
+          criteria = { class = "firefox"; };
+          command = ''move --no-auto-back-and-forth conainer to workspace "1:web"'';
+        }
+        {
+          criteria = { class = "wezterm-system"; };
+          command = ''mark "alpha", move scratchpad'';
+        }
+        {
+          criteria = { class = "wezterm-audio"; };
+          command = ''mark "beta", move scratchpad'';
+        }
+      ];
       modes = {
         resize = {
           # Shrink/grow window size.
