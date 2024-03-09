@@ -143,6 +143,12 @@
           fi
           rm -f -- "$tempfile"
       }
+
+      # Execute command and exit into interactive prompt; use as: `zsh -is eval 'command to execute'`
+      if [[ $1 == eval ]]; then
+          "$@"
+      set --
+      fi
     '';
   };
 }
