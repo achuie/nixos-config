@@ -31,19 +31,20 @@
           modules = [ ./nixos/configuration.nix ];
         };
       };
-      homeConfigurations = let
-        system = "x86_64-linux";
-      in
-      {
-        "achuie@nixtest" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.${system};
-          extraSpecialArgs = {
-            inherit (self) inputs outputs;
-            firacode = self.inputs.firacode.packages.${system}.default;
-            iosevka = self.inputs.iosevka.packages.${system}.default;
+      homeConfigurations =
+        let
+          system = "x86_64-linux";
+        in
+        {
+          "achuie@nixtest" = home-manager.lib.homeManagerConfiguration {
+            pkgs = nixpkgs.legacyPackages.${system};
+            extraSpecialArgs = {
+              inherit (self) inputs outputs;
+              firacode = self.inputs.firacode.packages.${system}.default;
+              iosevka = self.inputs.iosevka.packages.${system}.default;
+            };
+            modules = [ ./home-manager/home.nix ];
           };
-          modules = [ ./home-manager/home.nix ];
         };
-      };
     };
 }
