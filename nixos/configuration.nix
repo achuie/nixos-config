@@ -2,11 +2,12 @@
 # and in the NixOS manual accessible by running ‘nixos-help’.
 { inputs, outputs, lib, config, pkgs, ... }:
 
+let
+  customSddmTheme = pkgs.callPackage ./where-is-my-sddm-theme { };
+in
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  # Include the results of the hardware scan.
+  imports = [ ./hardware-configuration.nix ];
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -21,7 +22,7 @@
   networking.hostName = "nixtest"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking.networkmanager.enable = true; # Easiest to use and most distros use this by default.
 
   # Set your time zone.
   time.timeZone = "Asia/Tokyo";
@@ -90,7 +91,7 @@
   #   vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #   wget
   # ];
-  environment.systemPackages = with pkgs; [ vim git lynx st xclip fd ripgrep ];
+  environment.systemPackages = with pkgs; [ vim git lynx st xclip fd ripgrep customSddmTheme ];
   # programs.hyprland = {
   #   enable = true;
   #   xwayland = {
@@ -103,7 +104,14 @@
     autorun = false;
     exportConfiguration = true;
     desktopManager.xterm.enable = false;
-    displayManager.startx.enable = true;
+    # displayManager.startx.enable = true;
+    displayManager = {
+      defaultSession = "none+i3";
+      sddm = {
+        enable = true;
+        theme = "${builtins.replaceStrings [ "-" ] [ "_" ] customSddmTheme.pname}";
+      };
+    };
     windowManager.i3 = {
       enable = true;
       extraPackages = with pkgs; [ dmenu-rs i3status-rust ];
