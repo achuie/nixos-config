@@ -1,11 +1,10 @@
 { where-is-my-sddm-theme }:
 
-(where-is-my-sddm-theme.overrideAttrs (finalAttrs: prevAttrs: {
-  patches = prevAttrs.patches or [ ] ++ [ ./longInputBox.patch ];
-})).override {
+where-is-my-sddm-theme.override {
   themeConfig.General = {
     cursorColor = "#ffffff";
     backgroundMode = "aspect";
+    passwordInputWidth = 0.9;
     background = "${builtins.fetchurl
       {
         url =

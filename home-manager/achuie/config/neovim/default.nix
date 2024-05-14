@@ -14,8 +14,8 @@
       source = pkgs.vimPlugins.telescope-fzf-native-nvim;
     };
   };
-  # Treesitter needs gcc; Mason needs cargo.
-  home.packages = with pkgs; [ gcc cargo ];
+  # Treesitter needs gcc; Mason needs cargo and Python
+  home.packages = with pkgs; [ gcc cargo python3 ];
   programs.neovim = {
     enable = true;
     plugins = with pkgs.vimPlugins; [ nvim-treesitter.withAllGrammars telescope-fzf-native-nvim ];

@@ -15,6 +15,7 @@
       url = "github:achuie/dotfiles?dir=nix-flakes/iosevka";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.4.1";
   };
 
   outputs = { self, nixpkgs, home-manager, ... }:
@@ -28,7 +29,11 @@
       nixosConfigurations = {
         nixtest = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit (self) inputs outputs; };
-          modules = [ ./nixos/configuration.nix ];
+          modules = [ ./nixos/nixtest/configuration.nix ];
+        };
+        svalbard = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit (self) inputs outputs; };
+          modules = [ ./nixos/svalbard/configuration.nix ];
         };
       };
       homeConfigurations =
@@ -43,7 +48,16 @@
               firacode = self.inputs.firacode.packages.${system}.default;
               iosevka = self.inputs.iosevka.packages.${system}.default;
             };
-            modules = [ ./home-manager/home.nix ];
+            modules = [ ./home-manager/achuie/home.nix ];
+          };
+          "achuie@svalbard" = home-manager.lib.homeManagerConfiguration {
+            pkgs = nixpkgs.legacyPackages.${system};
+            extraSpecialArgs = {
+              inherit (self) inputs outputs;
+              firacode = self.inputs.firacode.packages.${system}.default;
+              iosevka = self.inputs.iosevka.packages.${system}.default;
+            };
+            modules = [ ./home-manager/achuie/home.nix ];
           };
         };
     };

@@ -3,7 +3,7 @@
 { inputs, outputs, lib, config, pkgs, ... }:
 
 let
-  customSddmTheme = pkgs.callPackage ./where-is-my-sddm-theme { };
+  customSddmTheme = pkgs.callPackage ../../packages/where-is-my-sddm-theme { };
 in
 {
   # Include the results of the hardware scan.

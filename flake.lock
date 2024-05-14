@@ -12,11 +12,11 @@
       },
       "locked": {
         "dir": "nix-flakes/firacode",
-        "lastModified": 1709793977,
-        "narHash": "sha256-s/XwJO7usGgXJipPt7R2+Egt9WhThqeRq/xQI06093Y=",
+        "lastModified": 1715694941,
+        "narHash": "sha256-Hp9jSxk7QrWXTxvcjLhVPxVOUMB1f21Z3W5ZGq5yF0o=",
         "owner": "achuie",
         "repo": "dotfiles",
-        "rev": "5ee6b35f0d6931919fe33218d83ca1bcb8e600b3",
+        "rev": "b0fbe2480c09f3a6d296b670c3995b187255af75",
         "type": "github"
       },
       "original": {
@@ -65,11 +65,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1709764752,
-        "narHash": "sha256-+lM4J4JoJeiN8V+3WSWndPHj1pJ9Jc1UMikGbXLqCTk=",
+        "lastModified": 1715486357,
+        "narHash": "sha256-4pRuzsHZOW5W4CsXI9uhKtiJeQSUoe1d2M9mWU98HC4=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "cf111d1a849ddfc38e9155be029519b0e2329615",
+        "rev": "44677a1c96810a8e8c4ffaeaad10c842402647c1",
         "type": "github"
       },
       "original": {
@@ -86,11 +86,11 @@
       },
       "locked": {
         "dir": "nix-flakes/iosevka",
-        "lastModified": 1709793977,
-        "narHash": "sha256-s/XwJO7usGgXJipPt7R2+Egt9WhThqeRq/xQI06093Y=",
+        "lastModified": 1715694941,
+        "narHash": "sha256-Hp9jSxk7QrWXTxvcjLhVPxVOUMB1f21Z3W5ZGq5yF0o=",
         "owner": "achuie",
         "repo": "dotfiles",
-        "rev": "5ee6b35f0d6931919fe33218d83ca1bcb8e600b3",
+        "rev": "b0fbe2480c09f3a6d296b670c3995b187255af75",
         "type": "github"
       },
       "original": {
@@ -123,6 +123,22 @@
         "type": "github"
       }
     },
+    "nix-flatpak": {
+      "locked": {
+        "lastModified": 1711997201,
+        "narHash": "sha256-J71xzQlVYsjagA4AsVwRazhBh2rZrPpKvxTgs6UzL7c=",
+        "owner": "gmodena",
+        "repo": "nix-flatpak",
+        "rev": "b76fa31346db7fc958a9898f3c594696ca71c4fd",
+        "type": "github"
+      },
+      "original": {
+        "owner": "gmodena",
+        "ref": "v0.4.1",
+        "repo": "nix-flatpak",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1643805626,
@@ -140,11 +156,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1709703039,
-        "narHash": "sha256-6hqgQ8OK6gsMu1VtcGKBxKQInRLHtzulDo9Z5jxHEFY=",
+        "lastModified": 1715534503,
+        "narHash": "sha256-5ZSVkFadZbFP1THataCaSf0JH2cAH3S29hU9rrxTEqk=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "9df3e30ce24fd28c7b3e2de0d986769db5d6225d",
+        "rev": "2057814051972fa1453ddfb0d98badbea9b83c06",
         "type": "github"
       },
       "original": {
@@ -175,6 +191,7 @@
         "firacode": "firacode",
         "home-manager": "home-manager",
         "iosevka": "iosevka",
+        "nix-flatpak": "nix-flatpak",
         "nixpkgs": "nixpkgs_2"
       }
     },
