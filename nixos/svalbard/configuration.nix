@@ -2,36 +2,46 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ inputs, outputs, lib, config, pkgs, ... }:
+{ inputs, outputs, config, lib, pkgs, ... }:
 
 {
-  # Include the results of the hardware scan
-  imports = [ ./hardware-configuration.nix ];
+  imports =
+    [ # Include the results of the hardware scan.
+      ./hardware-configuration.nix
+    ];
 
-  # Use the systemd-boot EFI boot loader
-  boot.loader.systemd-boot.enable = true;
-  # TODO: Potential problems with older SSDs?
-  # boot.loader.efi.canTouchEfiVariables = true;
-
-  # Enable ZFS
-  boot.supportedFilesystems = [ "zfs" ];
-  boot.initrd.kernelModules = [ "zfs" ];
-  boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
-
+  # Use the GRUB 2 boot loader.
+  boot.loader.grub = {
+    enable = true;
+    device = "nodev";
+    efiSupport = true;
+    efiInstallAsRemovable = true;
+    enableCryptodisk = true;
+  };
   # boot.loader.grub.efiSupport = true;
   # boot.loader.grub.efiInstallAsRemovable = true;
-  # boot.loader.efi.efiSysMountPoint = "/boot/efi";
-  # Define on which hard drive you want to install Grub.
-  # boot.loader.grub.device = "/dev/sda"; # or "nodev" for efi only
+  boot.loader.efi.efiSysMountPoint = "/boot/efi";
+  boot.loader.efi.canTouchEfiVariables = false;
+  boot.initrd = {
+    luks.devices.root = {
+      device = "/dev/disk/by-uuid/c2eaa586-d09d-4d28-a582-1ae15c1ee236";
+      preLVM = true;
+      keyFile = "/keyfile0.bin";
+      allowDiscards = true;
+    };
+    secrets = {
+      "keyfile0.bin" = "/etc/secrets/initrd/keyfile0.bin";
+      "keyfile1.bin" = "/etc/secrets/initrd/keyfile1.bin";
+    };
+  };
+  boot.initrd.kernelModules = [ "zfs" ];
+  boot.supportedFilesystems = [ "zfs" ];
+  boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
+  boot.zfs.allowHibernation = false;
+  boot.zfs.devNodes = "/dev/disk/by-uuid";
 
-  # Root BTRFS with compression
-  fileSystems."/".options = [ "compress=zstd" ];
-
-  networking.hostName = "svalbard"; # Define your hostname.
-  # Required by ZFS to keep track of hosts that access the fs
-  networking.hostId = "43068007";
-  # Pick only one of the below networking options.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.hostName = "svalbard";
+  networking.hostId = "1467377d";
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
   time.timeZone = "Asia/Tokyo";
@@ -78,7 +88,7 @@
     enable = true;
     enableGlobalCompInit = false;
   };
-  
+
   nix = {
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
@@ -121,10 +131,12 @@
   services.openssh.enable = true;
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 18131 ];
+  networking.firewall = {
+    enable = true;
+    allowedTCPPorts = [ 18131 ];
+  };
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  networking.firewall.enable = true;
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you

@@ -10,49 +10,38 @@
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
   boot.initrd.kernelModules = [ "dm-snapshot" ];
-  boot.initrd.luks.devices = {
-    root = {
-      device = "/dev/disk/by-uuid/612ef92b-ce92-44d8-b604-a6f94c47a713";
-      preLVM = true;
-      allowDiscards = true;
-    };
-  };
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
-  boot.zfs.allowHibernation = false;
-  boot.zfs.requestEncryptionCredentials = true;
-  boot.zfs.forceImportRoot = false;
-  boot.zfs.devNodes = "/dev/disk/by-uuid/4760162534474763103";
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/fbd9fa24-c27f-4988-b822-d5628ab2bda3";
+    { device = "/dev/disk/by-uuid/90f6abc1-1b2e-444c-800b-68a041d62fdb";
       fsType = "btrfs";
-      options = [ "compress=zstd" ];
+      options = [ "compress=zstd" "noatime" ];
     };
 
-  fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/D194-F980";
+  fileSystems."/boot/efi" =
+    { device = "/dev/disk/by-uuid/4E7A-8F9F";
       fsType = "vfat";
-      options = [ "fmask=0022" "dmask=0022" "umask=0077" ];
+      options = [ "fmask=0022" "dmask=0022" ];
     };
 
   fileSystems."/home" =
-    { device = "tank/home";
+    { device = "ztank/home";
       fsType = "zfs";
     };
 
   fileSystems."/media" =
-    { device = "tank/media";
+    { device = "ztank/media";
       fsType = "zfs";
     };
 
   fileSystems."/share" =
-    { device = "tank/share";
+    { device = "ztank/share";
       fsType = "zfs";
     };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/bf244e62-9b4f-41b7-a530-c9af507423cd"; }
+    [ { device = "/dev/disk/by-uuid/f9d5b16c-14c9-4935-96dd-90020c8264cf"; }
     ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
