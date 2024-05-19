@@ -2,7 +2,6 @@
 
 {
   imports = [
-    inputs.nix-flatpak.homeManagerModules.nix-flatpak
     ./config/i3
     ./config/neovim
     ./config/wezterm
@@ -33,18 +32,6 @@
     enable = true;
     userName = "achuie";
     userEmail = "achuie@protonmail.com";
-  };
-
-  services.flatpak = {
-    packages = [
-      { appId = "org.mozilla.firefox"; origin = "flathub"; }
-    ];
-    overrides = {
-      "org.mozilla.firefox".Context = {
-        filesystems = [ "xdg-download" ];
-        nofilesystem = "host:reset";
-      };
-    };
   };
 
   # services.gpg-agent = {

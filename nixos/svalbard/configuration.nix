@@ -17,6 +17,7 @@
     efiSupport = true;
     efiInstallAsRemovable = true;
     enableCryptodisk = true;
+    configurationLimit = 20;
   };
   # boot.loader.grub.efiSupport = true;
   # boot.loader.grub.efiInstallAsRemovable = true;
@@ -101,6 +102,24 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [ vim git lynx st xclip fd ripgrep ];
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    config.common.default = [ "gtk" ];
+  };
+  services.flatpak = {
+    enable = true;
+    packages = [
+      "org.mozilla.firefox"
+    ];
+    overrides = {
+      "org.mozilla.firefox".Context = {
+        filesystems = [ "xdg-download" ];
+        nofilesystems = [ "host:reset" ];
+      };
+    };
+  };
 
   security.rtkit.enable = true;
 

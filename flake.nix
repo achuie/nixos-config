@@ -18,7 +18,7 @@
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.4.1";
   };
 
-  outputs = { self, nixpkgs, home-manager, ... }:
+  outputs = { self, nixpkgs, home-manager, nix-flatpak, ... }:
     let
       forAllSystems = f:
         nixpkgs.lib.genAttrs [ "x86_64-linux" ] (system:
@@ -33,7 +33,10 @@
         };
         svalbard = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit (self) inputs outputs; };
-          modules = [ ./nixos/svalbard/configuration.nix ];
+          modules = [
+            nix-flatpak.nixosModules.nix-flatpak
+            ./nixos/svalbard/configuration.nix
+          ];
         };
       };
       homeConfigurations =
