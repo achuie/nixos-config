@@ -39,7 +39,7 @@
   boot.supportedFilesystems = [ "zfs" ];
   boot.kernelPackages = config.boot.zfs.package.latestCompatibleLinuxPackages;
   boot.zfs.allowHibernation = false;
-  boot.zfs.devNodes = "/dev/disk/by-uuid";
+  boot.zfs.devNodes = "/dev/disk/by-id";
 
   networking.hostName = "svalbard";
   networking.hostId = "1467377d";
