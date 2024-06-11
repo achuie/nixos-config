@@ -24,6 +24,8 @@
       args.iosevka
       lm_sensors
       skim
+      pulsemixer
+      maim
     ];
   };
 
@@ -32,6 +34,25 @@
     enable = true;
     userName = "achuie";
     userEmail = "achuie@protonmail.com";
+  };
+
+  services.flatpak = {
+    packages = [
+      "org.mozilla.firefox"
+    ];
+    overrides = {
+      "org.mozilla.firefox".Context = {
+        filesystems = [ "!host:reset" "xdg-download" ];
+        sockets = [
+          "gpg-agent"
+          "pcsc"  # Expose smart cards (i.e. YubiKey)
+        ];
+      };
+    };
+    update.auto = {
+      enable = true;
+      onCalendar = "weekly";
+    };
   };
 
   # services.gpg-agent = {

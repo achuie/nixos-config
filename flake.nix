@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixos-hardware.url = "github:nixos/nixos-hardware/master";
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -18,7 +19,7 @@
     nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.4.1";
   };
 
-  outputs = { self, nixpkgs, home-manager, nix-flatpak, ... }:
+  outputs = { self, nixpkgs, nixos-hardware, home-manager, nix-flatpak, ... }:
     let
       forAllSystems = f:
         nixpkgs.lib.genAttrs [ "x86_64-linux" ] (system:
@@ -34,7 +35,8 @@
         svalbard = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit (self) inputs outputs; };
           modules = [
-            nix-flatpak.nixosModules.nix-flatpak
+            nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
+            nixos-hardware.nixosModules.common-gpu-amd
             ./nixos/svalbard/configuration.nix
           ];
         };
@@ -60,7 +62,10 @@
               firacode = self.inputs.firacode.packages.${system}.default;
               iosevka = self.inputs.iosevka.packages.${system}.default;
             };
-            modules = [ ./home-manager/achuie/home.nix ];
+            modules = [
+              nix-flatpak.homeManagerModules.nix-flatpak
+              ./home-manager/achuie/home.nix
+            ];
           };
         };
     };

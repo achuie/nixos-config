@@ -69,6 +69,8 @@
   # Enable CUPS to print documents.
   # services.printing.enable = true;
 
+  services.fstrim.enable = true;
+
   sound.enable = true;
   services.pipewire = {
     enable = true;
@@ -101,25 +103,17 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [ vim git lynx st xclip fd ripgrep ];
+  environment.systemPackages = with pkgs; [ vim git lynx st xclip fd ripgrep rsync ];
 
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [
+      pkgs.xdg-desktop-portal-gtk
+      pkgs.xdg-desktop-portal-shana
+    ];
     config.common.default = [ "gtk" ];
   };
-  services.flatpak = {
-    enable = true;
-    packages = [
-      "org.mozilla.firefox"
-    ];
-    overrides = {
-      "org.mozilla.firefox".Context = {
-        filesystems = [ "xdg-download" ];
-        nofilesystems = [ "host:reset" ];
-      };
-    };
-  };
+  services.flatpak.enable = true;
 
   security.rtkit.enable = true;
 
@@ -147,7 +141,12 @@
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    authorizedKeysInHomedir = true;
+    ports = [ 18131 ];
+    settings = { PasswordAuthentication = false; };
+  };
 
   # Open ports in the firewall.
   networking.firewall = {
