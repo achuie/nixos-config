@@ -105,16 +105,6 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [ vim git lynx st xclip fd ripgrep rsync ];
 
-  xdg.portal = {
-    enable = true;
-    extraPortals = [
-      pkgs.xdg-desktop-portal-gtk
-      pkgs.xdg-desktop-portal-shana
-    ];
-    config.common.default = [ "gtk" ];
-  };
-  services.flatpak.enable = true;
-
   security.rtkit.enable = true;
 
   services.xserver = {
@@ -125,7 +115,7 @@
     displayManager.startx.enable = true;
     windowManager.i3 = {
       enable = true;
-      extraPackages = with pkgs; [ dmenu-rs i3status-rust ];
+      extraPackages = with pkgs; [ dmenu-rs i3status-rust i3lock-color imagemagick ];
     };
   };
   services.picom.enable = true;
@@ -145,6 +135,7 @@
     enable = true;
     authorizedKeysInHomedir = true;
     ports = [ 18131 ];
+    allowSFTP = true;
     settings = { PasswordAuthentication = false; };
   };
 

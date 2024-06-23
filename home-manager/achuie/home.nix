@@ -26,32 +26,28 @@
       skim
       pulsemixer
       maim
+      feh
     ];
   };
 
-  programs.home-manager.enable = true;
-  programs.git = {
-    enable = true;
-    userName = "achuie";
-    userEmail = "achuie@protonmail.com";
-  };
-
-  services.flatpak = {
-    packages = [
-      "org.mozilla.firefox"
-    ];
-    overrides = {
-      "org.mozilla.firefox".Context = {
-        filesystems = [ "!host:reset" "xdg-download" ];
-        sockets = [
-          "gpg-agent"
-          "pcsc"  # Expose smart cards (i.e. YubiKey)
-        ];
-      };
-    };
-    update.auto = {
+  programs = {
+    home-manager.enable = true;
+    git = {
       enable = true;
-      onCalendar = "weekly";
+      lfs.enable = true;
+      userName = "achuie";
+      userEmail = "achuie@protonmail.com";
+    };
+    firefox = {
+      enable = true;
+      policies = {
+        OfferToSaveLogins = false;
+        Permissions = {
+          Notifications = {
+            BlockNewRequests = true;
+          };
+        };
+      };
     };
   };
 

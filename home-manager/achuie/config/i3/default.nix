@@ -16,6 +16,13 @@ let
 in
 {
   home.file.".xinitrc".source = ./xinitrc;
+  home.file.".fehbg" = {
+    text = ''
+      #!/usr/bin/env sh
+      feh --no-fehbg --bg-fill '${config.home.homeDirectory}/.background-image'
+    '';
+    executable = true;
+  };
   xsession.windowManager.i3 = {
     enable = true;
     config = {
@@ -166,13 +173,13 @@ in
 
         # exit i3 (logs you out of your X session)
         "${modifier}+Shift+e" = ''
-          exec i3-nagbar -t warning -m 'You pressed the exit \
+          exec ${pkgs.i3}/bin/i3-nagbar -t warning -m 'You pressed the exit \
           shortcut. Do you really want to exit i3? This will end your X session.' -b \
           'Yes, exit i3' 'i3-msg exit'
         '';
 
         # lock the screen
-        "--release ${modifier}+o" = "exec $HOME/.config/i3/lock.sh";
+        "--release ${modifier}+o" = "exec ${./lock.sh}";
 
         "${modifier}+r" = ''mode "resize"'';
         "${modifier}+m" = ''mode "music"'';

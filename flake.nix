@@ -16,10 +16,9 @@
       url = "github:achuie/dotfiles?dir=nix-flakes/iosevka";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    nix-flatpak.url = "github:gmodena/nix-flatpak/?ref=v0.4.1";
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, home-manager, nix-flatpak, ... }:
+  outputs = { self, nixpkgs, nixos-hardware, home-manager, ... }:
     let
       forAllSystems = f:
         nixpkgs.lib.genAttrs [ "x86_64-linux" ] (system:
@@ -62,10 +61,7 @@
               firacode = self.inputs.firacode.packages.${system}.default;
               iosevka = self.inputs.iosevka.packages.${system}.default;
             };
-            modules = [
-              nix-flatpak.homeManagerModules.nix-flatpak
-              ./home-manager/achuie/home.nix
-            ];
+            modules = [ ./home-manager/achuie/home.nix ];
           };
         };
     };

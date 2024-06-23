@@ -24,6 +24,5 @@ export TERMINAL=wezterm
 # dunst &
 
 export XDG_DOWNLOAD_DIR="$HOME/Downloads"
-export XDG_DATA_DIRS="$XDG_DATA_DIRS:/usr/share:/var/lib/flatpak/exports/share:$HOME/.local/share/flatpak/exports/share"
 
 exec i3

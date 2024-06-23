@@ -9,7 +9,7 @@ trap revert HUP INT TERM
 xset +dpms dpms 15 15 15
 
 if [ ! -e "${HOME}/.lockscreen.png" ] || [ "$1" == "-r" ]; then
-  wall="$(tail -n 1 ${HOME}/.fehbg | sed "s/[^']*'//" | sed "s/' //")"
+  wall="$(tail -n 1 ${HOME}/.fehbg | sed "s/[^']*'//" | sed "s/'//")"
 
   rectX=85
   rectY=1220
