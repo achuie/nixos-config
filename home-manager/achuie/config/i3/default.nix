@@ -173,7 +173,7 @@ in
 
         # exit i3 (logs you out of your X session)
         "${modifier}+Shift+e" = ''
-          exec ${pkgs.i3}/bin/i3-nagbar -t warning -m 'You pressed the exit \
+          exec i3-nagbar -t warning -m 'You pressed the exit \
           shortcut. Do you really want to exit i3? This will end your X session.' -b \
           'Yes, exit i3' 'i3-msg exit'
         '';
@@ -187,6 +187,7 @@ in
       startup = [
         { command = ''wezterm start --class "wezterm-system"''; notification = false; }
         { command = ''wezterm start --class "wezterm-audio" -- zsh -is eval 'pulsemixer' ''; notification = false; }
+        { command = ''$HOME/.fehbg''; notification = false; }
       ];
       window.commands = [
         {
@@ -219,7 +220,7 @@ in
           # Resize and move to corner
           c = ''
             floating enable, resize set 20 ppt 20 ppt, \
-            exec --no-startup-id $HOME/.config/i3/move_screen_ppt.sh 79 77
+            exec --no-startup-id ${./move_screen_ppt.sh} 79 77
           '';
 
           # Back to normal: Enter or Escape

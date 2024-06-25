@@ -1,8 +1,10 @@
 #!/usr/bin/bash
 
+systemctl --user import-environment XAUTHORITY DISPLAY
+
 # xrdb -load .Xresources
 
-# picom -b --config /home/achuie/.config/picom/picom.conf
+# picom -b --config $HOME/.config/picom/picom.conf
 
 xset -dpms
 xset s off

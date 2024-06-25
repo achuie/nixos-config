@@ -70,6 +70,10 @@
   # services.printing.enable = true;
 
   services.fstrim.enable = true;
+  services.zfs = {
+    autoScrub.enable = true;
+    trim.enable = true;
+  };
 
   sound.enable = true;
   services.pipewire = {
@@ -103,7 +107,10 @@
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
-  environment.systemPackages = with pkgs; [ vim git lynx st xclip fd ripgrep rsync ];
+  environment = {
+    systemPackages = with pkgs; [ vim git lynx st xclip fd ripgrep rsync pciutils ];
+    pathsToLink = [ "/libexec" ];
+  };
 
   security.rtkit.enable = true;
 
@@ -118,7 +125,6 @@
       extraPackages = with pkgs; [ dmenu-rs i3status-rust i3lock-color imagemagick ];
     };
   };
-  services.picom.enable = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

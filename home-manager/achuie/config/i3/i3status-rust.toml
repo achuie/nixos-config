@@ -11,12 +11,6 @@ critical_fg = "#ea4e6b"
 icons = "awesome6"
 
 [[block]]
-block = "focused_window"
-[block.format]
-full = " $title.str(max_w:80){ $marks.str(max_w:80)|} | "
-short = " $title.str(max_w:20){ $marks.str(max_w:20)|} | "
-
-[[block]]
 block = "net" 
 format_alt = " $icon {$signal_strength $ssid $frequency|Wired} via $device "
 interval = 5
@@ -73,6 +67,19 @@ block = "battery"
 driver = "upower"
 [block.format]
 full = " $icon $percentage $time "
+
+[[block]]
+block = "backlight"
+minimum = 0.1
+cycle = [30, 50, 75]
+
+[[block]]
+block = "toggle"
+format = " $icon "
+command_on = """(setsid redshift -l $(curl -s "https://location.services.mozilla.com/v1/geolocate?key=geoclue" \
+    | awk 'OFS=":" {print $3,$5}' | tr -d ',}') -t 6500:4000 >/dev/null 2>&1 &)"""
+command_off = "pkill redshift || true"
+command_state = "if [ -z $(pgrep redshift) ]; then exit 0; else; sleep 5; pgrep redshift; fi || true"
 
 [[block]]
 block = "time"

@@ -7,6 +7,7 @@
     ./config/wezterm
     ./config/tmux
     ./config/zsh
+    ./config/picom
   ];
   nixpkgs = {
     overlays = [ ];
@@ -19,15 +20,26 @@
     username = "achuie";
     homeDirectory = "/home/achuie";
     packages = with pkgs; [
-      font-awesome
       args.firacode
       args.iosevka
+      noto-fonts-cjk-serif
+      noto-fonts-cjk-sans
+      noto-fonts-color-emoji
+      font-awesome
+
       lm_sensors
       skim
       pulsemixer
       maim
       feh
+      redshift
+      mpv
     ];
+    pointerCursor = {
+      package = pkgs.gnome.adwaita-icon-theme;
+      name = "Adwaita";
+      x11.enable = true;
+    };
   };
 
   programs = {
@@ -50,6 +62,8 @@
       };
     };
   };
+
+  fonts.fontconfig.enable = true;
 
   # services.gpg-agent = {
   #   enable = true;

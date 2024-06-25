@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Gets the pixel coordinates of the given percentage of screen width and
 # height, from the top left corner.
