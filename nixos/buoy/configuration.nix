@@ -2,12 +2,12 @@
 # your system. Help is available in the configuration.nix(5) man page, on
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
-{ inputs, outputs, config, lib, pkgs, ... }@args:
+{ inputs, config, lib, pkgs, ... }:
 
 {
   imports =
     [
-      "${args.nixpkgs-stable}/nixos/modules/virtualisation/digital-ocean-image.nix"
+      "${inputs.nixpkgs-stable}/nixos/modules/virtualisation/digital-ocean-image.nix"
     ];
 
   virtualisation.digitalOceanImage.compressionMethod = "bzip2";
