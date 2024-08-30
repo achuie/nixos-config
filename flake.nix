@@ -41,7 +41,7 @@
           ];
         };
         buoy = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit (self.inputs) nixpkgs-stable; };
+          specialArgs = { inherit (self) inputs; };
           modules = [
             ./nixos/buoy/configuration.nix
           ];
