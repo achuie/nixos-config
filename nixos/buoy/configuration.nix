@@ -10,6 +10,7 @@
       "${inputs.nixpkgs-stable}/nixos/modules/virtualisation/digital-ocean-image.nix"
     ];
 
+  nixpkgs.hostPlatform = "x86_64-linux";
   virtualisation.digitalOceanImage.compressionMethod = "bzip2";
 
   time.timeZone = "Asia/Tokyo";
@@ -28,6 +29,7 @@
   users.users.root = {
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJQ1/DesaSOCyZALVMFENA3DORBXN/+hoGVjUo/SOo2h achuie@pinionwheel"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICPvDDEW8oP7z/1C8RRh9UI0SlSwodbktUQwXuEMcF8n achuie@svalbard"
     ];
     # Generated with `mkpasswd` for use with DO web login
     hashedPassword = "$y$j9T$qdoZa2/tZ9/z01pUQtXgu.$IPXB8M04U8t.ybPMJsHResgJUBaTp9bv1ToU7q9UQn8";
@@ -56,12 +58,13 @@
     enable = true;
     authorizedKeysInHomedir = true;
     allowSFTP = true;
-    settings = { PasswordAuthentication = false; };
+    settings = { PasswordAuthentication = false; GatewayPorts = "yes"; };
   };
 
   # Open ports in the firewall.
   networking.firewall = {
     enable = true;
+    allowedTCPPorts = [ 18131 ];
   };
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.

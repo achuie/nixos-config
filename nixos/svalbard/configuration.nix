@@ -32,7 +32,6 @@
     };
     secrets = {
       "keyfile0.bin" = "/etc/secrets/initrd/keyfile0.bin";
-      "keyfile1.bin" = "/etc/secrets/initrd/keyfile1.bin";
     };
   };
   boot.initrd.kernelModules = [ "zfs" ];
@@ -108,7 +107,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment = {
-    systemPackages = with pkgs; [ vim git lynx st xclip fd ripgrep rsync pciutils ];
+    systemPackages = with pkgs; [ vim git lynx st xclip fd ripgrep rsync pciutils btop killall autossh ];
     pathsToLink = [ "/libexec" ];
   };
 
@@ -140,7 +139,6 @@
   services.openssh = {
     enable = true;
     authorizedKeysInHomedir = true;
-    ports = [ 18131 ];
     allowSFTP = true;
     settings = { PasswordAuthentication = false; };
   };
@@ -148,7 +146,18 @@
   # Open ports in the firewall.
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 18131 ];
+  };
+
+  systemd.services.buoyTunnel = {
+    description = "Start reverse tunnel to buoy, and keep it alive.";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "network.target" "network-online.target" "sshd.service" ];
+    serviceConfig = {
+      ExecStart = ''
+        ${pkgs.autossh}/bin/autossh -M 0 -o "ServerAliveInterval 30" -o "ServerAliveCountMax 3" -N -R *:18131:localhost:22 \
+        -i /home/achuie/.ssh/id_ed25519 root@164.90.245.94
+      '';
+    };
   };
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
