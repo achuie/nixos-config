@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
     nixos-hardware.url = "github:nixos/nixos-hardware/master";
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -37,6 +38,12 @@
             nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
             nixos-hardware.nixosModules.common-gpu-amd
             ./nixos/svalbard/configuration.nix
+          ];
+        };
+        buoy = nixpkgs.lib.nixosSystem {
+          specialArgs = { inherit (self) inputs; };
+          modules = [
+            ./nixos/buoy/configuration.nix
           ];
         };
       };
