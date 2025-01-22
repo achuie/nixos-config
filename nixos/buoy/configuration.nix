@@ -53,6 +53,29 @@
 
   security.rtkit.enable = true;
 
+  services.caddy = {
+    enable = true;
+    package = pkgs.caddy.withPlugins {
+      plugins = [ "github.com/caddy-dns/porkbun@v0.2.1" ];
+      hash = "sha256-5rfdWHT2ah5THFKjcSoN+aTLhnjQYbNFQxQTfXB439I=";
+    };
+    globalConfig = ''    
+      acme_dns porkbun {
+        api_key {$APIKEY}
+        api_secret_key {$APISECRETKEY}
+      }
+    '';
+    virtualHosts."andrew.huie.dev" = {
+      serverAliases = [ "www.andrew.huie.dev" ];
+      extraConfig = ''
+        root * /srv/andrew
+        encode zstd gzip
+        file_server
+      '';
+    };
+  };
+  systemd.services.caddy.serviceConfig.EnvironmentFile = ["/etc/secrets/porkbun_env"];
+
   # Enable the OpenSSH daemon.
   services.openssh = {
     enable = true;
@@ -64,7 +87,7 @@
   # Open ports in the firewall.
   networking.firewall = {
     enable = true;
-    allowedTCPPorts = [ 18131 ];
+    allowedTCPPorts = [ 18131 80 443 ];
   };
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
