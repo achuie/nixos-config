@@ -65,16 +65,47 @@
         api_secret_key {$APISECRETKEY}
       }
     '';
-    virtualHosts."andrew.huie.dev" = {
-      serverAliases = [ "www.andrew.huie.dev" ];
-      extraConfig = ''
-        root * /srv/andrew
-        encode zstd gzip
-        file_server
-      '';
+    virtualHosts = {
+      "www.huie.dev" =
+        let
+          index = ''
+            <html lang="en">
+              <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Huie</title>
+              </head>
+              <h1 style="font-size:18rem\;text-align:center">許</h1>
+              <br>
+              <a href="https://andrew.huie.dev"><p style="text-align:center">andrew.huie.dev</p></a>
+            </html>
+          '';
+        in
+        {
+          extraConfig = ''
+            root * ${
+              pkgs.runCommand "landing" {} ''
+                mkdir "$out"
+                echo "${index}" > "$out/index.html"
+              ''
+            }
+            encode zstd gzip
+            file_server
+          '';
+        };
+      "huie.dev" = { extraConfig = "redir https://www.{host}{uri}"; };
+
+      "andrew.huie.dev" = {
+        extraConfig = ''
+          root * /srv/andrew
+          encode zstd gzip
+          file_server
+        '';
+      };
+      "www.andrew.huie.dev" = { extraConfig = "redir https://andrew.huie.dev{uri}"; };
     };
   };
-  systemd.services.caddy.serviceConfig.EnvironmentFile = ["/etc/secrets/porkbun_env"];
+  systemd.services.caddy.serviceConfig.EnvironmentFile = [ "/etc/secrets/porkbun_env" ];
 
   # Enable the OpenSSH daemon.
   services.openssh = {
