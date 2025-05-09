@@ -26,14 +26,26 @@
   #   useXkbConfig = true; # use xkb.options in tty.
   # };
 
-  users.users.root = {
-    openssh.authorizedKeys.keys = [
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJQ1/DesaSOCyZALVMFENA3DORBXN/+hoGVjUo/SOo2h achuie@pinionwheel"
-      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICPvDDEW8oP7z/1C8RRh9UI0SlSwodbktUQwXuEMcF8n achuie@svalbard"
-    ];
-    # Generated with `mkpasswd` for use with DO web login
-    hashedPassword = "$y$j9T$qdoZa2/tZ9/z01pUQtXgu.$IPXB8M04U8t.ybPMJsHResgJUBaTp9bv1ToU7q9UQn8";
+  users.users = {
+    # Disable root login.
+    root.hashedPassword = null;
+    achuie = {
+      isNormalUser = true;
+      extraGroups = [ "wheel" ];
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJQ1/DesaSOCyZALVMFENA3DORBXN/+hoGVjUo/SOo2h achuie@sprocket"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICPvDDEW8oP7z/1C8RRh9UI0SlSwodbktUQwXuEMcF8n achuie@svalbard"
+      ];
+    };
+    whooie = {
+      isNormalUser = true;
+      openssh.authorizedKeys.keys = [
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHe9UMcR8jqTjBky2R0q90QdQOF+b3gmOxXswiGuDLfX whooie@kestrel"
+      ];
+    };
   };
+
+  security.sudo.wheelNeedsPassword = false;
 
   nix = {
     registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
@@ -103,6 +115,15 @@
         '';
       };
       "www.andrew.huie.dev" = { extraConfig = "redir https://andrew.huie.dev{uri}"; };
+
+      "will.huie.dev" = {
+        extraConfig = ''
+          root * /srv/will
+          encode zstd gzip
+          file_server
+        '';
+      };
+      "www.will.huie.dev" = { extraConfig = "redir https://will.huie.dev{uri}"; };
     };
   };
   systemd.services.caddy.serviceConfig.EnvironmentFile = [ "/etc/secrets/porkbun_env" ];
