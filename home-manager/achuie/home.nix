@@ -3,7 +3,6 @@
 {
   imports = [
     ./config/i3
-    ./config/neovim
     ./config/wezterm
     ./config/tmux
     ./config/zsh
@@ -20,13 +19,14 @@
     username = "achuie";
     homeDirectory = "/home/achuie";
     packages = with pkgs; [
-      args.firacode
-      args.iosevka
+      args.firacode.${pkgs.system}
+      args.iosevka.${pkgs.system}
       noto-fonts-cjk-serif
       noto-fonts-cjk-sans
       noto-fonts-color-emoji
       font-awesome
 
+      nvim-pkg  # From achuie-nvim overlay
       lm_sensors
       skim
       pulsemixer
@@ -36,7 +36,7 @@
       mpv
     ];
     pointerCursor = {
-      package = pkgs.gnome.adwaita-icon-theme;
+      package = pkgs.adwaita-icon-theme;
       name = "Adwaita";
       x11.enable = true;
     };

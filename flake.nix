@@ -11,10 +11,14 @@
     };
     firacode = {
       url = "github:achuie/dotfiles?dir=nix-flakes/firacode";
-      inputs.nixpkgs.follows = "nixpkgs";
+      flake = false;
     };
     iosevka = {
       url = "github:achuie/dotfiles?dir=nix-flakes/iosevka";
+      flake = false;
+    };
+    achuie-nvim = {
+      url = "github:achuie/config.nvim";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
@@ -35,7 +39,7 @@
         svalbard = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit (self) inputs outputs; };
           modules = [
-            nixos-hardware.nixosModules.common-cpu-intel-kaby-lake
+            nixos-hardware.nixosModules.common-cpu-intel-cpu-only
             nixos-hardware.nixosModules.common-gpu-amd
             ./nixos/svalbard/configuration.nix
           ];
@@ -50,6 +54,34 @@
       homeConfigurations =
         let
           system = "x86_64-linux";
+          firacode-dv = forAllSystems (pkgs:
+            pkgs.stdenvNoCC.mkDerivation {
+              pname = "firacode-custom";
+              version = "achuie";
+              src = self.inputs.firacode;
+              buildPhase = "";
+              installPhase = ''
+                output=$out/share/fonts/truetype
+                mkdir -p $output
+                cp ./nix-flakes/firacode/Fira\ Code\ Custom/* $output
+              '';
+              meta = {};
+            }
+          );
+          iosevka-dv = forAllSystems (pkgs:
+            pkgs.stdenvNoCC.mkDerivation {
+              pname = "iosevka-custom";
+              version = "achuie";
+              src = self.inputs.iosevka;
+              buildPhase = "";
+              installPhase = ''
+                output=$out/share/fonts/truetype
+                mkdir -p $output
+                cp ./nix-flakes/iosevka/Iosevkacustom/* $output
+              '';
+              meta = {};
+            }
+          );
         in
         {
           "achuie@nixtest" = home-manager.lib.homeManagerConfiguration {
@@ -62,11 +94,11 @@
             modules = [ ./home-manager/achuie/home.nix ];
           };
           "achuie@svalbard" = home-manager.lib.homeManagerConfiguration {
-            pkgs = nixpkgs.legacyPackages.${system};
+            pkgs = (import nixpkgs {inherit system; overlays = [ self.inputs.achuie-nvim.overlays.default ];});
             extraSpecialArgs = {
               inherit (self) inputs outputs;
-              firacode = self.inputs.firacode.packages.${system}.default;
-              iosevka = self.inputs.iosevka.packages.${system}.default;
+              firacode = firacode-dv;
+              iosevka = iosevka-dv;
             };
             modules = [ ./home-manager/achuie/home.nix ];
           };

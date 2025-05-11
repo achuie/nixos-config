@@ -10,7 +10,6 @@
       ./hardware-configuration.nix
     ];
 
-  # Use the GRUB 2 boot loader.
   boot.loader.grub = {
     enable = true;
     device = "nodev";
@@ -74,7 +73,6 @@
     trim.enable = true;
   };
 
-  sound.enable = true;
   services.pipewire = {
     enable = true;
     alsa = { enable = true; support32Bit = true; };
