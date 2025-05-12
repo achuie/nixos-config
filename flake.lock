@@ -23,10 +23,9 @@
         "type": "github"
       }
     },
-    "firacode": {
+    "dotfiles": {
       "flake": false,
       "locked": {
-        "dir": "nix-flakes/firacode",
         "lastModified": 1746953971,
         "narHash": "sha256-gxOMpvyG9qTvvIjoNKSMSouP6jet0nGXqFdN6V+ZLt4=",
         "owner": "achuie",
@@ -35,7 +34,6 @@
         "type": "github"
       },
       "original": {
-        "dir": "nix-flakes/firacode",
         "owner": "achuie",
         "repo": "dotfiles",
         "type": "github"
@@ -182,24 +180,6 @@
         "type": "github"
       }
     },
-    "iosevka": {
-      "flake": false,
-      "locked": {
-        "dir": "nix-flakes/iosevka",
-        "lastModified": 1746953971,
-        "narHash": "sha256-gxOMpvyG9qTvvIjoNKSMSouP6jet0nGXqFdN6V+ZLt4=",
-        "owner": "achuie",
-        "repo": "dotfiles",
-        "rev": "cceb7b704342be5472cbd0712fb945ce870b2e1f",
-        "type": "github"
-      },
-      "original": {
-        "dir": "nix-flakes/iosevka",
-        "owner": "achuie",
-        "repo": "dotfiles",
-        "type": "github"
-      }
-    },
     "luvit-meta": {
       "flake": false,
       "locked": {
@@ -327,9 +307,8 @@
     "root": {
       "inputs": {
         "achuie-nvim": "achuie-nvim",
-        "firacode": "firacode",
+        "dotfiles": "dotfiles",
         "home-manager": "home-manager",
-        "iosevka": "iosevka",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-stable": "nixpkgs-stable_2"

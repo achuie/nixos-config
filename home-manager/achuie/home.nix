@@ -19,14 +19,14 @@
     username = "achuie";
     homeDirectory = "/home/achuie";
     packages = with pkgs; [
-      args.firacode.${pkgs.system}
-      args.iosevka.${pkgs.system}
+      args.firacode
+      args.iosevka
       noto-fonts-cjk-serif
       noto-fonts-cjk-sans
       noto-fonts-color-emoji
       font-awesome
 
-      nvim-pkg  # From achuie-nvim overlay
+      inputs.achuie-nvim.packages.${pkgs.system}.default
       lm_sensors
       skim
       pulsemixer

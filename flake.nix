@@ -9,12 +9,8 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    firacode = {
-      url = "github:achuie/dotfiles?dir=nix-flakes/firacode";
-      flake = false;
-    };
-    iosevka = {
-      url = "github:achuie/dotfiles?dir=nix-flakes/iosevka";
+    dotfiles = {
+      url = "github:achuie/dotfiles";
       flake = false;
     };
     achuie-nvim = {
@@ -54,34 +50,30 @@
       homeConfigurations =
         let
           system = "x86_64-linux";
-          firacode-dv = forAllSystems (pkgs:
-            pkgs.stdenvNoCC.mkDerivation {
-              pname = "firacode-custom";
-              version = "achuie";
-              src = self.inputs.firacode;
-              buildPhase = "";
-              installPhase = ''
-                output=$out/share/fonts/truetype
-                mkdir -p $output
-                cp ./nix-flakes/firacode/Fira\ Code\ Custom/* $output
-              '';
-              meta = {};
-            }
-          );
-          iosevka-dv = forAllSystems (pkgs:
-            pkgs.stdenvNoCC.mkDerivation {
-              pname = "iosevka-custom";
-              version = "achuie";
-              src = self.inputs.iosevka;
-              buildPhase = "";
-              installPhase = ''
-                output=$out/share/fonts/truetype
-                mkdir -p $output
-                cp ./nix-flakes/iosevka/Iosevkacustom/* $output
-              '';
-              meta = {};
-            }
-          );
+          firacode-dv = nixpkgs.legacyPackages.${system}.stdenvNoCC.mkDerivation {
+            pname = "firacode-custom";
+            version = "achuie";
+            src = self.inputs.dotfiles;
+            buildPhase = "";
+            installPhase = ''
+              output=$out/share/fonts/truetype
+              mkdir -p $output
+              cp ./nix-flakes/firacode/Fira\ Code\ Custom/* $output
+            '';
+            meta = {};
+          };
+          iosevka-dv = nixpkgs.legacyPackages.${system}.stdenvNoCC.mkDerivation {
+            pname = "iosevka-custom";
+            version = "achuie";
+            src = self.inputs.dotfiles;
+            buildPhase = "";
+            installPhase = ''
+              output=$out/share/fonts/truetype
+              mkdir -p $output
+              cp ./nix-flakes/iosevka/Iosevkacustom/* $output
+            '';
+            meta = {};
+          };
         in
         {
           "achuie@nixtest" = home-manager.lib.homeManagerConfiguration {
@@ -94,7 +86,7 @@
             modules = [ ./home-manager/achuie/home.nix ];
           };
           "achuie@svalbard" = home-manager.lib.homeManagerConfiguration {
-            pkgs = (import nixpkgs {inherit system; overlays = [ self.inputs.achuie-nvim.overlays.default ];});
+            pkgs = nixpkgs.legacyPackages.${system};
             extraSpecialArgs = {
               inherit (self) inputs outputs;
               firacode = firacode-dv;
