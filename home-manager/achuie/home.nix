@@ -2,7 +2,8 @@
 
 {
   imports = [
-    ./config/i3
+    # ./config/i3
+    ./config/sway
     ./config/wezterm
     ./config/tmux
     ./config/zsh

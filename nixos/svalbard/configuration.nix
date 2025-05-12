@@ -105,22 +105,29 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment = {
-    systemPackages = with pkgs; [ vim git lynx st xclip fd ripgrep rsync pciutils btop killall autossh ];
+    systemPackages = with pkgs; [ vim git lynx fd ripgrep rsync pciutils btop killall autossh ];
     pathsToLink = [ "/libexec" ];
   };
 
   security.rtkit.enable = true;
 
-  services.xserver = {
+  security.polkit = {
     enable = true;
-    autorun = false;
-    exportConfiguration = true;
-    desktopManager.xterm.enable = false;
-    displayManager.startx.enable = true;
-    windowManager.i3 = {
-      enable = true;
-      extraPackages = with pkgs; [ dmenu-rs i3status-rust i3lock-color imagemagick ];
-    };
+    # extraConfig = ''
+    #   polkit.addRule(function (action, subject) {
+    #     if (
+    #       subject.isInGroup("users") &&
+    #       [
+    #         "org.freedesktop.login1.reboot",
+    #         "org.freedesktop.login1.reboot-multiple-sessions",
+    #         "org.freedesktop.login1.power-off",
+    #         "org.freedesktop.login1.power-off-multiple-sessions",
+    #       ].indexOf(action.id) !== -1
+    #     ) {
+    #       return polkit.Result.YES;
+    #     }
+    #   });
+    # '';
   };
 
   # Some programs need SUID wrappers, can be configured further or are
