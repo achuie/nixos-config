@@ -173,12 +173,12 @@ in
         # exit i3 (logs you out of your X session)
         "${modifier}+Shift+e" = ''
           exec swaynag -t warning -m 'You pressed the exit \
-          shortcut. Do you really want to exit sway? This will end your session.' -b \
+          shortcut. Do you really want to exit sway? This will end your Wayland session.' -b \
           'Yes, exit sway' 'sway exit'
         '';
 
         # lock the screen
-        "--release ${modifier}+o" = "exec ${./lock.sh}";
+        "${modifier}+o" = "exec ${./lock.sh}";
 
         "${modifier}+r" = ''mode "resize"'';
         "${modifier}+m" = ''mode "music"'';
@@ -186,21 +186,24 @@ in
       startup = [
         { command = ''wezterm start --class "wezterm-system"''; }
         { command = ''wezterm start --class "wezterm-audio" -- zsh -is eval 'pulsemixer' ''; }
-        { command = ''$HOME/.fehbg''; }
         # Give Sway a little time to startup before starting kanshi
         { command = ''sleep 5; systemctl --user start kanshi.service''; }
+        {
+          command = ''sway output "*" bg ~/.background-image fill'';
+          always = true;
+        }
       ];
       window.commands = [
         {
-          criteria = { class = "firefox"; };
+          criteria = { app_id = "firefox"; };
           command = ''move --no-auto-back-and-forth conainer to workspace "1:web"'';
         }
         {
-          criteria = { class = "wezterm-system"; };
+          criteria = { app_id = "wezterm-system"; };
           command = ''mark "alpha", move scratchpad'';
         }
         {
-          criteria = { class = "wezterm-audio"; };
+          criteria = { app_id = "wezterm-audio"; };
           command = ''mark "beta", move scratchpad'';
         }
       ];
