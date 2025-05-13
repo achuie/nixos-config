@@ -22,6 +22,7 @@
     packages = with pkgs; [
       args.firacode
       args.iosevka
+      noto-fonts
       noto-fonts-cjk-serif
       noto-fonts-cjk-sans
       noto-fonts-color-emoji
@@ -39,7 +40,8 @@
     pointerCursor = {
       package = pkgs.adwaita-icon-theme;
       name = "Adwaita";
-      x11.enable = true;
+      gtk.enable = true;
+      sway.enable = true;
     };
   };
 

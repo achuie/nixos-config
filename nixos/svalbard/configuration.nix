@@ -130,6 +130,12 @@
     # '';
   };
 
+  services.logind.extraConfig = ''
+    # don’t shutdown when power button is short-pressed
+    HandlePowerKey=ignore
+    HandlePowerKeyLongPress=poweroff
+  '';
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -156,11 +162,12 @@
   systemd.services.buoyTunnel = {
     description = "Start reverse tunnel to buoy, and keep it alive.";
     wantedBy = [ "multi-user.target" ];
+    wants = [ "network.target" "network-online.target" "sshd.service" ];
     after = [ "network.target" "network-online.target" "sshd.service" ];
     serviceConfig = {
       ExecStart = ''
         ${pkgs.autossh}/bin/autossh -M 0 -o "ServerAliveInterval 30" -o "ServerAliveCountMax 3" -N -R *:18131:localhost:22 \
-        -i /home/achuie/.ssh/id_ed25519 root@164.90.245.94
+        -i /home/achuie/.ssh/id_ed25519 achuie@164.90.245.94
       '';
     };
   };

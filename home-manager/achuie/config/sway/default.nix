@@ -15,13 +15,18 @@ let
   ws10 = "10";
 in
 {
+  home.packages = with pkgs; [
+    wmenu
+    i3status-rust
+  ];
   wayland.windowManager.sway = {
     enable = true;
     wrapperFeatures.gtk = true; # Fixes common issues with GTK 3 apps
+    systemd.enable = true;
     config = {
       modifier = "Mod4";
       floating.modifier = "${modifier}";
-      menu = ''${pkgs.wmenu}/bin/wmenu_run --font "Fira Code Custom"'';
+      menu = ''${pkgs.wmenu}/bin/wmenu-run -f "Fira Code Custom 8"'';
       workspaceAutoBackAndForth = true;
       fonts = { names = [ "Fira Code Custom" ]; size = 8.0; };
       keybindings = lib.mkOptionDefault {
@@ -87,8 +92,8 @@ in
         # focus the child container
         "${modifier}+c" = "focus child";
         # dynamic tagging
-        # "${modifier}+x" = "exec --no-startup-id ${./dyn_tags.sh}";
-        # "${modifier}+Shift+x" = "exec --no-startup-id ${./dyn_tags_mv.sh}";
+        "${modifier}+x" = "exec --no-startup-id ${./dyn_tags.sh}";
+        "${modifier}+Shift+x" = "exec --no-startup-id ${./dyn_tags_mv.sh}";
         # bindsym $mod+Shift+t exec i3-input -F 'rename workspace to %s' -P 'New name: '
         # bindsym $mod+t exec i3-input -F 'workspace %s' -P 'Navigate to: '
 
@@ -172,7 +177,7 @@ in
         '';
 
         # lock the screen
-        # "--release ${modifier}+o" = "exec ${./lock.sh}";
+        "--release ${modifier}+o" = "exec ${./lock.sh}";
 
         "${modifier}+r" = ''mode "resize"'';
         "${modifier}+m" = ''mode "music"'';
@@ -213,10 +218,10 @@ in
           Right = "resize grow width 5 px or 5 ppt";
 
           # Resize and move to corner
-          # c = ''
-          #   floating enable, resize set 20 ppt 20 ppt, \
-          #   exec --no-startup-id ${./move_screen_ppt.sh} 79 77
-          # '';
+          c = ''
+            floating enable, resize set 20 ppt 20 ppt, \
+            exec --no-startup-id ${./move_screen_ppt.sh} 79 77
+          '';
 
           # Back to normal: Enter or Escape
           Return = "mode default";
@@ -251,12 +256,12 @@ in
   # For monitor hot swapping
   systemd.user.services.kanshi = {
     Unit.Description = "kanshi daemon";
-    Environment = {
-      WAYLAND_DISPLAY="wayland-1";
-      DISPLAY = ":0";
-    }; 
     Service = {
       Type = "simple";
+      Environment = [
+        "WAYLAND_DISPLAY=wayland-1"
+        "DISPLAY=:0"
+      ];
       ExecStart = ''${pkgs.kanshi}/bin/kanshi -c ${./kanshi_config}'';
     };
   };
