@@ -18,6 +18,10 @@ let
   dyn_tags = pkgs.writeShellScript "dyn_tags" ''
     # Focus a workspace or create a new one.
 
+    SWAYMSG=${pkgs.sway}/bin/swaymsg
+    JQ=${pkgs.jq}/bin/jq
+    MENU="${pkgs.tofi}/bin/tofi"
+
     MOVE=""
     MENUPROMPT="switch:"
     if [ $1 = "move" ]; then
@@ -25,22 +29,36 @@ let
       MENUPROMPT="move:"
     fi
 
-    SWAYMSG=${pkgs.sway}/bin/swaymsg
-    JQ=${pkgs.jq}/bin/jq
-    MENU="${pkgs.tofi}/bin/tofi"
-
     $SWAYMSG $MOVE workspace $($SWAYMSG -t get_workspaces | $JQ -M '.[] | .name' \
       | tr -d '"' | sort -u | $MENU -c ${./tofi_run_theme} --anchor=bottom \
       --prompt-text=" $MENUPROMPT " --margin-bottom=24 --require-match=false)
   '';
+  color-picker = pkgs.writeShellScriptBin "color-picker" ''
+    # Pick a color to clipboard
+
+    GRIM=${pkgs.grim}/bin/grim
+    SLURP=${pkgs.slurp}/bin/slurp
+    CONVERT=${pkgs.imagemagick}/bin/convert
+    WLCOPY=${pkgs.wl-clipboard-rs}/bin/wl-copy
+
+    $GRIM -g "$($SLURP -p)" -t ppm - | $CONVERT - -format '%[pixel:p{0,0}]' txt:- | $WLCOPY
+  '';
 in
 {
-  # For debugging
   home.packages = with pkgs; [
     tofi
     i3status-rust
     jq
+    grim
+    slurp
+    imagemagick
+    wl-clipboard-rs
+    color-picker
   ];
+  programs.swayimg = {
+    enable = true;
+    settings = { viewer = { window = "#ffffffff"; }; };
+  };
   wayland.windowManager.sway = {
     enable = true;
     wrapperFeatures.gtk = true; # Fixes common issues with GTK 3 apps
@@ -200,6 +218,14 @@ in
 
         # lock the screen
         "${modifier}+o" = "exec ${./lock.sh}";
+
+        "${modifier}+Shift+s" = "exec ${pkgs.grim}/bin/grim ~/$(date +'%s_screenshot.png')";
+        "${modifier}+Control+s" = ''
+          exec '${pkgs.grim}/bin/grim -g "$(swaymsg -t get_tree | ${pkgs.jq}/bin/jq -j '.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"')" ~/$(date +'%s_screenshot.png')'
+        '';
+        "${modifier}+Mod1+s" = ''
+          exec '${pkgs.grim}/bin/grim -g "$(slurp)" - | ${pkgs.wl-clipboard-rs}/bin/wl-copy -t image/png'
+        '';
 
         "${modifier}+r" = ''mode "resize"'';
         "${modifier}+m" = ''mode "music"'';

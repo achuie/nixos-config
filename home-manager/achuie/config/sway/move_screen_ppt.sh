@@ -9,8 +9,6 @@ JQ=$(command -v jq) || exit 2
 ACTIVE=$($SWAYMSG -t get_workspaces | $JQ -M '.[] | {f: .focused, out: .output}
     | select(.f == true) | .out')
 
-echo $ACTIVE
-
 $SWAYMSG -t command move position $($SWAYMSG -t get_outputs \
     | $JQ -M '.[] | {out: .name, r: .rect} | select(.out == '"$ACTIVE"')
     | [.r.width, .r.height, .r.x, .r.y]
