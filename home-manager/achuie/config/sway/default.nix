@@ -18,22 +18,22 @@ let
   dyn_tags = pkgs.writeShellScript "dyn_tags" ''
     # Focus a workspace or create a new one.
 
-    SWAYMSG=${pkgs.sway}/bin/swaymsg
-    JQ=${pkgs.jq}/bin/jq
-    MENU="${pkgs.tofi}/bin/tofi -c ${./tofi_tags_theme}"
-
-    $SWAYMSG workspace $($SWAYMSG -t get_workspaces | $JQ -M '.[] | .name' \
-      | tr -d '"' | sort -u | $MENU)
-  '';
-  dyn_tags_mv = pkgs.writeShellScript "dyn_tags_mv" ''
-    # Move a window to an existing or new workspace.
+    MOVE=""
+    MENUPROMPT="tag:"
+    if [ $1 = "move" ]; then
+      MOVE="-t command move"
+      MENUPROMPT="move:"
+    fi
 
     SWAYMSG=${pkgs.sway}/bin/swaymsg
     JQ=${pkgs.jq}/bin/jq
-    MENU="${pkgs.tofi}/bin/tofi -c ${./tofi_tags_theme}"
+    MENU="${pkgs.tofi}/bin/tofi"
+    MENUCONF="--anchor=bottom --prompt-text=' "$MENUPROMPT" ' --margin-bottom=24 \
+      --require-match=false"
 
-    $SWAYMSG -t command move workspace $($SWAYMSG -t get_workspaces \
-      | $JQ -M '.[] | .name' | tr -d '"' | sort -u | $MENU)
+    $SWAYMSG $MOVE workspace $($SWAYMSG -t get_workspaces | $JQ -M '.[] | .name' \
+      | tr -d '"' | sort -u | $MENU -c ${./tofi_run_theme} --anchor=bottom \
+      --prompt-text=" $MENUPROMPT " --margin-bottom=24 --require-match=false)
   '';
 in
 {
@@ -117,7 +117,7 @@ in
         "${modifier}+c" = "focus child";
         # dynamic tagging
         "${modifier}+x" = "exec --no-startup-id ${dyn_tags}";
-        "${modifier}+Shift+x" = "exec --no-startup-id ${dyn_tags_mv}";
+        "${modifier}+Shift+x" = "exec --no-startup-id ${dyn_tags} move";
         # bindsym $mod+Shift+t exec i3-input -F 'rename workspace to %s' -P 'New name: '
         # bindsym $mod+t exec i3-input -F 'workspace %s' -P 'Navigate to: '
 
