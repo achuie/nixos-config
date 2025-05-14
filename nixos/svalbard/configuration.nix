@@ -130,8 +130,8 @@
     # '';
   };
 
+  # Don’t shutdown when power button is short-pressed
   services.logind.extraConfig = ''
-    # don’t shutdown when power button is short-pressed
     HandlePowerKey=ignore
     HandlePowerKeyLongPress=poweroff
   '';

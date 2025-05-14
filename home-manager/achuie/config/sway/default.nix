@@ -3,6 +3,7 @@
 let
   modifier = config.wayland.windowManager.sway.config.modifier;
   cfg = config.wayland.windowManager.sway.config;
+
   ws1 = "1";
   ws2 = "2";
   ws3 = "3";
@@ -13,10 +14,32 @@ let
   ws8 = "8";
   ws9 = "9";
   ws10 = "10";
+
+  dyn_tags = pkgs.writeShellScript "dyn_tags" ''
+    # Focus a workspace or create a new one.
+
+    SWAYMSG=${pkgs.sway}/bin/swaymsg
+    JQ=${pkgs.jq}/bin/jq
+    MENU="${pkgs.tofi}/bin/tofi -c ${./tofi_tags_theme}"
+
+    $SWAYMSG workspace $($SWAYMSG -t get_workspaces | $JQ -M '.[] | .name' \
+      | tr -d '"' | sort -u | $MENU)
+  '';
+  dyn_tags_mv = pkgs.writeShellScript "dyn_tags_mv" ''
+    # Move a window to an existing or new workspace.
+
+    SWAYMSG=${pkgs.sway}/bin/swaymsg
+    JQ=${pkgs.jq}/bin/jq
+    MENU="${pkgs.tofi}/bin/tofi -c ${./tofi_tags_theme}"
+
+    $SWAYMSG -t command move workspace $($SWAYMSG -t get_workspaces \
+      | $JQ -M '.[] | .name' | tr -d '"' | sort -u | $MENU)
+  '';
 in
 {
+  # For debugging
   home.packages = with pkgs; [
-    wmenu
+    tofi
     i3status-rust
     jq
   ];
@@ -27,9 +50,9 @@ in
     config = {
       modifier = "Mod4";
       floating.modifier = "${modifier}";
-      menu = ''${pkgs.wmenu}/bin/wmenu-run -f "Fira Code Custom 8"'';
+      menu = ''${pkgs.tofi}/bin/tofi-run -c ${./tofi_run_theme} | xargs swaymsg exec --'';
       workspaceAutoBackAndForth = true;
-      fonts = { names = [ "Fira Code Custom" ]; size = 8.0; };
+      fonts = { names = [ "Fira Code Custom" ]; size = 10.0; };
       keybindings = lib.mkOptionDefault {
         # #i3-sensible-terminal
         "${modifier}+Return" = "exec wezterm";
@@ -93,8 +116,8 @@ in
         # focus the child container
         "${modifier}+c" = "focus child";
         # dynamic tagging
-        "${modifier}+x" = "exec --no-startup-id ${./dyn_tags.sh}";
-        "${modifier}+Shift+x" = "exec --no-startup-id ${./dyn_tags_mv.sh}";
+        "${modifier}+x" = "exec --no-startup-id ${dyn_tags}";
+        "${modifier}+Shift+x" = "exec --no-startup-id ${dyn_tags_mv}";
         # bindsym $mod+Shift+t exec i3-input -F 'rename workspace to %s' -P 'New name: '
         # bindsym $mod+t exec i3-input -F 'workspace %s' -P 'Navigate to: '
 
@@ -196,7 +219,7 @@ in
       window.commands = [
         {
           criteria = { app_id = "firefox"; };
-          command = ''move --no-auto-back-and-forth conainer to workspace "1:web"'';
+          command = ''move --no-auto-back-and-forth conainer to workspace 1:web'';
         }
         {
           criteria = { app_id = "wezterm-system"; };
