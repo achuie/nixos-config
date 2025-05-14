@@ -220,6 +220,10 @@ in
           command = ''move --no-auto-back-and-forth window to workspace 1:web'';
         }
         {
+          criteria = { app_id = "discord"; };
+          command = ''move --no-auto-back-and-forth window to workspace 10:discord'';
+        }
+        {
           criteria = { app_id = "wezterm-system"; };
           command = ''mark "alpha", move scratchpad'';
         }
