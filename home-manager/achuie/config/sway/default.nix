@@ -19,7 +19,7 @@ let
     # Focus a workspace or create a new one.
 
     MOVE=""
-    MENUPROMPT="tag:"
+    MENUPROMPT="switch:"
     if [ $1 = "move" ]; then
       MOVE="-t command move"
       MENUPROMPT="move:"
@@ -28,8 +28,6 @@ let
     SWAYMSG=${pkgs.sway}/bin/swaymsg
     JQ=${pkgs.jq}/bin/jq
     MENU="${pkgs.tofi}/bin/tofi"
-    MENUCONF="--anchor=bottom --prompt-text=' "$MENUPROMPT" ' --margin-bottom=24 \
-      --require-match=false"
 
     $SWAYMSG $MOVE workspace $($SWAYMSG -t get_workspaces | $JQ -M '.[] | .name' \
       | tr -d '"' | sort -u | $MENU -c ${./tofi_run_theme} --anchor=bottom \
