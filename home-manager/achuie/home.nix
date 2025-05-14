@@ -32,9 +32,6 @@
       lm_sensors
       skim
       pulsemixer
-      maim
-      feh
-      redshift
       mpv
     ];
     pointerCursor = {

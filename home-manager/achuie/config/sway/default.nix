@@ -53,11 +53,20 @@ in
     slurp
     imagemagick
     wl-clipboard-rs
+    libnotify
     color-picker
   ];
   programs.swayimg = {
     enable = true;
     settings = { viewer = { window = "#ffffffff"; }; };
+  };
+  services.dunst = {
+    enable = true;
+    iconTheme = {
+      package = config.home.pointerCursor.package or pkgs.adwaita-icon-theme;
+      name = config.home.pointerCursor.name or "Adwaita";
+    };
+    configFile = "${./dunstrc}";
   };
   wayland.windowManager.sway = {
     enable = true;
@@ -307,7 +316,6 @@ in
       ];
     };
   };
-
   # For monitor hot swapping
   systemd.user.services.kanshi = {
     Unit.Description = "kanshi daemon";
