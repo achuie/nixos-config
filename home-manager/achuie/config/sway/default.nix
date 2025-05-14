@@ -219,7 +219,7 @@ in
       window.commands = [
         {
           criteria = { app_id = "firefox"; };
-          command = ''move --no-auto-back-and-forth conainer to workspace 1:web'';
+          command = ''move --no-auto-back-and-forth window to workspace 1:web'';
         }
         {
           criteria = { app_id = "wezterm-system"; };
