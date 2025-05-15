@@ -38,7 +38,7 @@ let
 
     GRIM=${pkgs.grim}/bin/grim
     SLURP=${pkgs.slurp}/bin/slurp
-    CONVERT=${pkgs.imagemagick}/bin/convert
+    CONVERT=${pkgs.imagemagick}/bin/magick
     WLCOPY=${pkgs.wl-clipboard-rs}/bin/wl-copy
 
     $GRIM -g "$($SLURP -p)" -t ppm - | $CONVERT - -format '%[pixel:p{0,0}]' txt:- | $WLCOPY
@@ -54,19 +54,93 @@ in
     imagemagick
     wl-clipboard-rs
     libnotify
+    swayidle
+    bc
     color-picker
   ];
-  programs.swayimg = {
-    enable = true;
-    settings = { viewer = { window = "#ffffffff"; }; };
-  };
-  services.dunst = {
-    enable = true;
-    iconTheme = {
-      package = config.home.pointerCursor.package or pkgs.adwaita-icon-theme;
-      name = config.home.pointerCursor.name or "Adwaita";
+  programs = {
+    swayimg = {
+      enable = true;
+      settings = { viewer = { window = "#ffffffff"; }; };
     };
-    configFile = "${./dunstrc}";
+    hyprlock = {
+      enable = true;
+      settings = {
+        general = { ignore_empty_input = true; };
+        background = [
+          {
+            path = "~/.background-image";
+          }
+        ];
+        label = [
+          {
+            monitor = "";
+            text = "$TIME";
+            color = "rgba(211, 215, 235, 1.0)";
+            font_size = 80;
+            font_family = "Fira Code Custom";
+            position = "0, 200";
+            halign = "center";
+            valign = "center";
+            shadow_passes = 2;
+          }
+          {
+            monitor = "";
+            text = ''cmd[update:5000] echo "$(date +'%A, %B %e, %Y')"'';
+            color = "rgba(211, 215, 235, 1.0)";
+            font_size = 24;
+            font_family = "Fira Code Custom";
+            position = "0, 100";
+            halign = "center";
+            valign = "center";
+            shadow_passes = 2;
+            shadow_size = 5;
+          }
+        ];
+        input-field = [
+          {
+            monitor = "";
+            size = "20%, 5%";
+            outline_thickness = 3;
+            inner_color = "rgba(50, 52, 74, 0.7)";
+            outer_color = "rgba(33ccffee) rgba(00ff99ee) 45deg";
+            check_color = "rgba(00ff99ee) rgba(ff6633ee) 120deg";
+            fail_color = "rgba(ff6633ee) rgba(ff0066ee) 40deg";
+            capslock_color = "rgba(ff9e64ee) rgba(ff7800ee) 20deg";
+            font_color = "rgb(143, 143, 143)";
+            font_family = "Iosevka Custom";
+            fade_on_empty = false;
+            rounding = 15;
+            position = "0, -20";
+            halign = "center";
+            valign = "center";
+            shadow_passes = 2;
+          }
+        ];
+      };
+    };
+  };
+  services = {
+    dunst = {
+      enable = true;
+      iconTheme = {
+        package = config.home.pointerCursor.package or pkgs.adwaita-icon-theme;
+        name = config.home.pointerCursor.name or "Adwaita";
+      };
+      configFile = "${./dunstrc}";
+    };
+    swayidle = {
+      enable = true;
+      extraArgs = [ "-w" ];
+      events = [];
+      timeouts = [
+        {
+          timeout = 15;
+          command = ''if ${pkgs.procps}/bin/pgrep -x hyprlock; then ${pkgs.sway}/bin/swaymsg "output * power off"; fi'';
+          resumeCommand = ''${pkgs.sway}/bin/swaymsg "output * power on"'';
+        }
+      ];
+    };
   };
   wayland.windowManager.sway = {
     enable = true;
@@ -226,7 +300,7 @@ in
         '';
 
         # lock the screen
-        "${modifier}+o" = "exec ${./lock.sh}";
+        "${modifier}+o" = "exec ${pkgs.hyprlock}/bin/hyprlock";
 
         "${modifier}+Shift+s" = "exec ${pkgs.grim}/bin/grim ~/$(date +'%s_screenshot.png')";
         "${modifier}+Control+s" = ''

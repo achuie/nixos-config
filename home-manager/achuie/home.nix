@@ -3,11 +3,11 @@
 {
   imports = [
     # ./config/i3
+    # ./config/picom
     ./config/sway
     ./config/wezterm
     ./config/tmux
     ./config/zsh
-    ./config/picom
   ];
   nixpkgs = {
     overlays = [ ];

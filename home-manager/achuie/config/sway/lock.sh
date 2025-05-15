@@ -1,41 +1,56 @@
 #!/usr/bin/env bash
 
-revert() {
-  xset dpms 0 0 0
-  xset -dpms
-}
+MAGICK=$(command -v magick) || exit 1
+LOCK=$(command -v swaylock) || exit 2
+NOTIFY=$(command -v notify-send) || exit 3
+RG=$(command -v rg) || exit 4
+SED=$(command -v sed) || exit 5
+BC=$(command -v bc) || exit 6
+JQ=$(command -v jq) || exit 7
+SWAYMSG=$(command -v swaymsg) || exit 8
 
-trap revert HUP INT TERM
-xset +dpms dpms 15 15 15
+lockbg="${HOME}/.lockscreen.png"
+if [ ! -e "$lockbg" ] || [ "$1" == "-r" ]; then
+  $NOTIFY -u low -a lockscreen "Generating lockscreen image from background"
 
-if [ ! -e "${HOME}/.lockscreen.png" ] || [ "$1" == "-r" ]; then
-  wall="$(tail -n 1 ${HOME}/.fehbg | sed "s/[^']*'//" | sed "s/'//")"
+  wall="${HOME}/.background-image"
+  $MAGICK "$wall" -resize 2256x2256 "$lockbg"
 
-  rectX=85
-  rectY=1220
-  rectWidth=610
-  rectHeight=200
+  rawdimensions=$(identify "$lockbg" | $RG PNG | \
+    $SED -n 's/.*[^0-9]\([0-9]\+x[0-9]\+\).*/\1/p')
+  # Parse "<x-dimension>x<y-dimension>"
+  IFS='x' read -ra dimensions <<< "$rawdimensions"
 
-  convert "$wall" -resize 2256x2256 -fill "#32344abb" \
+  rectX=$($BC <<<"${dimensions[0]}*38/1000")
+  rectY=$($BC <<<"${dimensions[1]}*736/1000")
+  rectWidth=$($BC <<<"${dimensions[0]}*270/1000")
+  rectHeight=$($BC <<<"${dimensions[1]}*136/1000")
+
+  $MAGICK "${HOME}/.lockscreen.png" -fill "#32344abb" \
     -draw "rectangle ${rectX},${rectY},$(($rectX+$rectWidth)),$(($rectY+$rectHeight))" \
     -region "${rectWidth}x${rectHeight}+${rectX}+${rectY}" \
     -blur 0x8 "${HOME}/.lockscreen.png"
 fi
 
-i3lock --nofork --ignore-empty-password \
-  --radius 60 --ring-width 15 --indicator --ind-pos="608:y+h-185" \
-  --color=00000088 \
+dimensions=($($SWAYMSG -t get_outputs | $JQ '.[0] | .rect | .width, .height'))
+indXPos=$($BC <<<"${dimensions[0]}*253/1000")
+indYPos=$($BC <<<"${dimensions[1]}*868/1000")
+$LOCK --ignore-empty-password \
+  --indicator-radius 60 --indicator \
+  --indicator-x-position=$indXPos --indicator-y-position=$indYPos \
+  --inside-color=00000088 \
   --inside-color=32344a88 --ring-color=ffffffff --line-uses-ring \
-  --keyhl-color=7aa2f7ff --bshl-color=444b6aff --separator-color=00000000 \
-  --ringver-color=75c1eeff --insidever-color=7dcfff88 \
-  --ringwrong-color=ea4e6bff --insidewrong-color=ff426688 \
-  --verif-text="..." --wrong-text="!" --noinput-text="---" \
-  --verif-color=ffffffff --wrong-color=ffffffff \
-  --time-font="Fira Code" --date-font="Fira Code" --layout-font="Fira Code" \
-  --time-align 1 --date-align 1 \
-  --force-clock --time-pos="ix-510:iy+20" --date-pos="ix-503:ty+60" \
-  --time-color=ffffffff --time-size=135 --time-str="%H:%M" \
-  --date-color=ffffffff --date-size=45 --date-str="%a %Y-%m-%d" \
-  -i "${HOME}/.lockscreen.png"
-
-revert
+  --key-hl-color=7aa2f7ff --bs-hl-color=444b6aff --separator-color=00000000 \
+  --ring-ver-color=75c1eeff --inside-ver-color=7dcfff88 \
+  --ring-wrong-color=ea4e6bff --inside-wrong-color=ff426688 \
+  --text-ver="..." --text-wrong="!" --text-clear="---" \
+  --text-ver-color=ffffffff --text-wrong-color=ffffffff \
+  --font="Fira Code Custom" \
+  --timestr="%H:%M" --datestr="%a %Y-%m-%d" \
+  --text-color=ffffffff \
+  --clock --timestr="%H:%M" --datestr="%a %Y-%m-%d" \
+  -i "${HOME}/.lockscreen.png" --scaling="fill"
+  # --time-align 1 --date-align 1 \
+  # --force-clock --time-pos="ix-510:iy+20" --date-pos="ix-503:ty+60" \
+  # --time-color=ffffffff --time-size=135 --timestr="%H:%M" \
+  # --date-color=ffffffff --date-size=45 --datestr="%a %Y-%m-%d" \
