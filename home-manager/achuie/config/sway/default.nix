@@ -86,7 +86,7 @@ in
           }
           {
             monitor = "";
-            text = ''cmd[update:5000] echo "$(date +'%A, %B %e, %Y')"'';
+            text = ''cmd[update:43200000] echo "$(date +'%A, %B %e, %Y')"'';
             color = "rgba(211, 215, 235, 1.0)";
             font_size = 24;
             font_family = "Fira Code Custom";
@@ -108,7 +108,7 @@ in
             capslock_color = "rgba(ff9e64ee) rgba(ff7800ee) 20deg";
             font_color = "rgb(143, 143, 143)";
             font_family = "Iosevka Custom";
-            placeholder_text = "<i>Password for $USER</i>";
+            placeholder_text = "<i>Password for <span foreground='##33ccff'>$USER</span></i>";
             fade_on_empty = false;
             rounding = 15;
             position = "0, -20";
