@@ -2,11 +2,12 @@
 
 {
   imports = [
-    ./config/i3
+    # ./config/i3
+    # ./config/picom
+    ./config/sway
     ./config/wezterm
     ./config/tmux
     ./config/zsh
-    ./config/picom
   ];
   nixpkgs = {
     overlays = [ ];
@@ -21,6 +22,7 @@
     packages = with pkgs; [
       args.firacode
       args.iosevka
+      noto-fonts
       noto-fonts-cjk-serif
       noto-fonts-cjk-sans
       noto-fonts-color-emoji
@@ -30,15 +32,13 @@
       lm_sensors
       skim
       pulsemixer
-      maim
-      feh
-      redshift
       mpv
     ];
     pointerCursor = {
       package = pkgs.adwaita-icon-theme;
       name = "Adwaita";
-      x11.enable = true;
+      gtk.enable = true;
+      sway.enable = true;
     };
   };
 

@@ -53,6 +53,7 @@
     settings = {
       experimental-features = "nix-command flakes";
       auto-optimise-store = true;
+      trusted-users = [ "root" "@wheel" ];
     };
   };
 
@@ -68,8 +69,8 @@
   services.caddy = {
     enable = true;
     package = pkgs.caddy.withPlugins {
-      plugins = [ "github.com/caddy-dns/porkbun@v0.2.1" ];
-      hash = "sha256-5rfdWHT2ah5THFKjcSoN+aTLhnjQYbNFQxQTfXB439I=";
+      plugins = [ "github.com/caddy-dns/porkbun@v0.3.1" ];
+      hash = "sha256-sa+L2YoTM1ZfhfowoCZwmggrUsqw0NmGWRK45TevxFo=";
     };
     globalConfig = ''    
       acme_dns porkbun {
@@ -133,7 +134,11 @@
     enable = true;
     authorizedKeysInHomedir = true;
     allowSFTP = true;
-    settings = { PasswordAuthentication = false; GatewayPorts = "yes"; };
+    settings = {
+      PasswordAuthentication = false;
+      PermitRootLogin = "no";
+      GatewayPorts = "yes";
+    };
   };
 
   # Open ports in the firewall.

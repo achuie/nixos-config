@@ -36,6 +36,6 @@ For uploading to DigitalOcean's image repo as a base for new droplets.
 ### NixOS remote build
 
 ```bash
-$ nixos-rebuild switch --flake .\#buoy --target-host root@<IP address>
+$ nixos-rebuild switch --flake .\#buoy --target-host achuie@buoy --use-remote-sudo
 ```
 Build locally on a NixOS system, then deploy to an existing droplet.

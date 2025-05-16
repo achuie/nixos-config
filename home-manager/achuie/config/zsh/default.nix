@@ -41,7 +41,7 @@
       git-log = "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %Cgreen(%cr) %C(bold blue)<%an>%Creset %<(50,trunc)%s' --all";
       git-vlog = "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %Cgreen%aD%Creset%n\'\'          %C(bold blue)<%an>%Creset %<(80,trunc)%s' --all";
     };
-    initExtra = ''
+    initContent = ''
       ## Set window title
       function win_title() { print -Pn "\e]2;%n@%m:%~\a" }
       precmd_functions+=(win_title)

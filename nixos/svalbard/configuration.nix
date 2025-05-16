@@ -105,23 +105,38 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment = {
-    systemPackages = with pkgs; [ vim git lynx st xclip fd ripgrep rsync pciutils btop killall autossh ];
+    systemPackages = with pkgs; [ vim git lynx fd ripgrep rsync pciutils btop killall autossh ];
     pathsToLink = [ "/libexec" ];
   };
 
-  security.rtkit.enable = true;
-
-  services.xserver = {
-    enable = true;
-    autorun = false;
-    exportConfiguration = true;
-    desktopManager.xterm.enable = false;
-    displayManager.startx.enable = true;
-    windowManager.i3 = {
+  security = {
+    rtkit.enable = true;
+    polkit = {
       enable = true;
-      extraPackages = with pkgs; [ dmenu-rs i3status-rust i3lock-color imagemagick ];
+      # extraConfig = ''
+      #   polkit.addRule(function (action, subject) {
+      #     if (
+      #       subject.isInGroup("users") &&
+      #       [
+      #         "org.freedesktop.login1.reboot",
+      #         "org.freedesktop.login1.reboot-multiple-sessions",
+      #         "org.freedesktop.login1.power-off",
+      #         "org.freedesktop.login1.power-off-multiple-sessions",
+      #       ].indexOf(action.id) !== -1
+      #     ) {
+      #       return polkit.Result.YES;
+      #     }
+      #   });
+      # '';
     };
+    pam.services.hyprlock = {};
   };
+
+  # Don’t shutdown when power button is short-pressed
+  services.logind.extraConfig = ''
+    HandlePowerKey=ignore
+    HandlePowerKeyLongPress=poweroff
+  '';
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -149,11 +164,12 @@
   systemd.services.buoyTunnel = {
     description = "Start reverse tunnel to buoy, and keep it alive.";
     wantedBy = [ "multi-user.target" ];
+    wants = [ "network.target" "network-online.target" "sshd.service" ];
     after = [ "network.target" "network-online.target" "sshd.service" ];
     serviceConfig = {
       ExecStart = ''
         ${pkgs.autossh}/bin/autossh -M 0 -o "ServerAliveInterval 30" -o "ServerAliveCountMax 3" -N -R *:18131:localhost:22 \
-        -i /home/achuie/.ssh/id_ed25519 root@164.90.245.94
+        -i /home/achuie/.ssh/id_ed25519 achuie@164.90.245.94
       '';
     };
   };

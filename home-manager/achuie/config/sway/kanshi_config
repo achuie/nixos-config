@@ -1,0 +1,7 @@
+profile {
+    output DP-2 enable scale 1
+}
+
+profile {
+    output HDMI1 enable scale 2
+}
