@@ -90,11 +90,10 @@ in
             color = "rgba(211, 215, 235, 1.0)";
             font_size = 24;
             font_family = "Fira Code Custom";
-            position = "0, 100";
+            position = "0, 120";
             halign = "center";
             valign = "center";
             shadow_passes = 2;
-            shadow_size = 5;
           }
         ];
         input-field = [
@@ -109,6 +108,7 @@ in
             capslock_color = "rgba(ff9e64ee) rgba(ff7800ee) 20deg";
             font_color = "rgb(143, 143, 143)";
             font_family = "Iosevka Custom";
+            placeholder_text = "<i>Password for $USER</i>";
             fade_on_empty = false;
             rounding = 15;
             position = "0, -20";
@@ -144,12 +144,16 @@ in
   };
   wayland.windowManager.sway = {
     enable = true;
+    package = pkgs.swayfx;
     wrapperFeatures.gtk = true; # Fixes common issues with GTK 3 apps
     systemd.enable = true;
+    # Due to: https://github.com/nix-community/home-manager/issues/5379
+    checkConfig = false;
     config = {
       modifier = "Mod4";
       floating.modifier = "${modifier}";
       menu = ''${pkgs.tofi}/bin/tofi-run -c ${./tofi_run_theme} | xargs swaymsg exec --'';
+      window.titlebar = true;
       workspaceAutoBackAndForth = true;
       fonts = { names = [ "Fira Code Custom" ]; size = 10.0; };
       keybindings = lib.mkOptionDefault {
@@ -313,6 +317,7 @@ in
         "${modifier}+r" = ''mode "resize"'';
         "${modifier}+m" = ''mode "music"'';
       };
+      defaultWorkspace = "workspace number ${ws1}";
       startup = [
         { command = ''wezterm start --class "wezterm-system"''; }
         { command = ''wezterm start --class "wezterm-audio" -- zsh -is eval 'pulsemixer' ''; }
@@ -339,6 +344,14 @@ in
         {
           criteria = { app_id = "wezterm-audio"; };
           command = ''mark "beta", move scratchpad'';
+        }
+        {
+          criteria = { app_id = ".*wezterm.*"; };
+          command = ''blur enable'';
+        }
+        {
+          criteria = { floating = true; };
+          command = ''shadows enable'';
         }
       ];
       modes = {
