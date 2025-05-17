@@ -33,6 +33,7 @@
       skim
       pulsemixer
       mpv
+      alsa-utils
     ];
     pointerCursor = {
       package = pkgs.adwaita-icon-theme;
