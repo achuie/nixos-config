@@ -85,5 +85,5 @@ command_state = "if [ -z $(pgrep redshift) ]; then exit 0; else; sleep 5; pgrep 
 block = "time"
 interval = 1
 [block.format]
-full = " $icon $timestamp.datetime(f:'%a %Y-%m-%d %T %z') " 
+full = " $icon $timestamp.datetime(f:'%a %Y-%m-%d %T %Z') "
 short = " $icon $timestamp.datetime(f:'%Y-%m-%d %T') "

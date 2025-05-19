@@ -4,6 +4,7 @@ height = 20
 horizontal = true
 font-size = 10
 prompt-text = " run: "
+text-cursor = true
 font = "Fira Code Custom"
 outline-width = 0
 border-width = 0

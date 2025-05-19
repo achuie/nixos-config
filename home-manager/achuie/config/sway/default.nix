@@ -402,6 +402,9 @@ in
         }
       ];
     };
+    extraConfig = ''
+      titlebar_padding 2
+    '';
   };
   # For monitor hot swapping
   systemd.user.services.kanshi = {
