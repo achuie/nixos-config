@@ -110,6 +110,7 @@ local config = {
   scrollback_lines = 10000,
   audible_bell = "Disabled",
   use_ime = false,
+  term = 'wezterm',
 
   quick_select_patterns = {
     -- Git-status file paths
