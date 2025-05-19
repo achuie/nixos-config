@@ -15,12 +15,12 @@ let
   ws9 = "9";
   ws10 = "10";
 
+  swaypkg = pkgs.swayfx;
+
   dyn_tags = pkgs.writeShellScript "dyn_tags" ''
     # Focus a workspace or create a new one.
 
-    SWAYMSG=${pkgs.sway}/bin/swaymsg
-    JQ=${pkgs.jq}/bin/jq
-    MENU="${pkgs.tofi}/bin/tofi"
+    SWAYMSG=${swaypkg}/bin/swaymsg
 
     MOVE=""
     MENUPROMPT="switch:"
@@ -29,19 +29,14 @@ let
       MENUPROMPT="move:"
     fi
 
-    $SWAYMSG $MOVE workspace $($SWAYMSG -t get_workspaces | $JQ -M '.[] | .name' \
-      | tr -d '"' | sort -u | $MENU -c ${./tofi_run_theme} --anchor=bottom \
+    $SWAYMSG $MOVE workspace $($SWAYMSG -t get_workspaces | ${pkgs.jq}/bin/jq -M '.[] | .name' \
+      | tr -d '"' | sort -u | ${pkgs.tofi}/bin/tofi -c ${./tofi_run_theme} --anchor=bottom \
       --prompt-text=" $MENUPROMPT " --margin-bottom=24 --require-match=false)
   '';
   color-picker = pkgs.writeShellScriptBin "color-picker" ''
     # Pick a color to clipboard
 
-    GRIM=${pkgs.grim}/bin/grim
-    SLURP=${pkgs.slurp}/bin/slurp
-    CONVERT=${pkgs.imagemagick}/bin/magick
-    WLCOPY=${pkgs.wl-clipboard-rs}/bin/wl-copy
-
-    $GRIM -g "$($SLURP -p)" -t ppm - | $CONVERT - -format '%[pixel:p{0,0}]' txt:- | $WLCOPY
+    ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -p)" -t ppm - | ${pkgs.imagemagick}/bin/magick - -format '%[pixel:p{0,0}]' txt:- | ${pkgs.wl-clipboard-rs}/bin/wl-copy
   '';
 in
 {
@@ -136,15 +131,15 @@ in
       timeouts = [
         {
           timeout = 15;
-          command = ''if ${pkgs.procps}/bin/pgrep -x hyprlock; then ${pkgs.sway}/bin/swaymsg "output * power off"; fi'';
-          resumeCommand = ''${pkgs.sway}/bin/swaymsg "output * power on"'';
+          command = ''if ${pkgs.procps}/bin/pgrep -x hyprlock; then ${swaypkg}/bin/swaymsg "output * power off"; fi'';
+          resumeCommand = ''${swaypkg}/bin/swaymsg "output * power on"'';
         }
       ];
     };
   };
   wayland.windowManager.sway = {
     enable = true;
-    package = pkgs.swayfx;
+    package = swaypkg;
     wrapperFeatures.gtk = true; # Fixes common issues with GTK 3 apps
     systemd.enable = true;
     # Due to: https://github.com/nix-community/home-manager/issues/5379
