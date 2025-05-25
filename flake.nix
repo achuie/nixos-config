@@ -9,6 +9,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    nixgl = {
+      url = "github:nix-community/nixgl";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     dotfiles = {
       url = "github:achuie/dotfiles";
       flake = false;
@@ -92,7 +96,17 @@
               firacode = firacode-dv;
               iosevka = iosevka-dv;
             };
-            modules = [ ./home-manager/achuie/home.nix ];
+            modules = [ ./home-manager/achuie/svalbard.nix ];
+          };
+          "achuie@arch" = home-manager.lib.homeManagerConfiguration {
+            pkgs = nixpkgs.legacyPackages.${system};
+            extraSpecialArgs = {
+              isOtherOS = true;
+              inherit (self) inputs outputs;
+              firacode = firacode-dv;
+              iosevka = iosevka-dv;
+            };
+            modules = [ ./home-manager/achuie/arch.nix ];
           };
         };
     };

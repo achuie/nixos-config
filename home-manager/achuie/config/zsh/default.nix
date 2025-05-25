@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, options, ... }@args:
 
 {
   home.file.".zsh/functions/prompt_achuie_setup".source = ./achuie.zsh;
@@ -149,6 +149,6 @@
           "$@"
       set --
       fi
-    '';
+    '' + (lib.strings.optionalString (args.isOtherOS or false) "emulate sh -c '. ${config.home.homeDirectory}/.nix-profile/etc/profile.d/nix.sh'");
   };
 }

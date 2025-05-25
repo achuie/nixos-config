@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, ... }@args:
 
 let
   modifier = config.wayland.windowManager.sway.config.modifier;
@@ -16,6 +16,7 @@ let
   ws10 = "10";
 
   swaypkg = pkgs.swayfx;
+  hyprlockpkg = if args.isOtherOS then null else pkgs.hyprlock;
 
   dyn_tags = pkgs.writeShellScript "dyn_tags" ''
     # Focus a workspace or create a new one.
@@ -60,6 +61,7 @@ in
     };
     hyprlock = {
       enable = true;
+      package = hyprlockpkg;
       settings = {
         general = { ignore_empty_input = true; };
         background = [
@@ -299,7 +301,7 @@ in
         '';
 
         # lock the screen
-        "${modifier}+o" = "exec ${pkgs.hyprlock}/bin/hyprlock";
+        "${modifier}+o" = "exec ${if hyprlockpkg == null then "" else hyprlockpkg}/bin/hyprlock";
 
         "${modifier}+Shift+s" = "exec ${pkgs.grim}/bin/grim ~/$(date +'%s_screenshot.png')";
         "${modifier}+Control+s" = ''
