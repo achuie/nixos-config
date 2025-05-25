@@ -39,3 +39,10 @@ For uploading to DigitalOcean's image repo as a base for new droplets.
 $ nixos-rebuild switch --flake .\#buoy --target-host achuie@buoy --use-remote-sudo
 ```
 Build locally on a NixOS system, then deploy to an existing droplet.
+
+## Home Manager on Arch
+
+- `nixGL` must be prepended to any invocation of a program that requires OpenGL, i.e., `$ nixGLIntel sway`.
+- Neovim `spellfile` doesn't work?
+- hyprlock needs to be installed natively to access PAM rules; Home Manager can still install the config by setting
+`programs.hyprlock.package = null`
