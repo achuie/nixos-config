@@ -53,4 +53,10 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+  hardware.amdgpu = {
+    opencl.enable = true;
+    amdvlk.enable = true;
+  };
+  environment.variables = { ROC_ENABLE_PRE_VEGA = "1"; };
 }
