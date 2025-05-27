@@ -3,5 +3,5 @@ profile {
 }
 
 profile {
-    output HDMI1 enable scale 2
+    output HDMI-A-1 enable scale 2
 }

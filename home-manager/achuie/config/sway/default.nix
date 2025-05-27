@@ -317,7 +317,7 @@ in
         { command = ''wezterm start --class "wezterm-system"''; }
         { command = ''wezterm start --class "wezterm-audio" -- zsh -is eval 'pulsemixer' ''; }
         # Give Sway a little time to startup before starting kanshi
-        { command = ''sleep 5; systemctl --user start kanshi.service''; }
+        { command = ''${pkgs.coreutils}/bin/sleep 5; systemctl --user start kanshi.service''; }
         {
           command = ''sway output "*" bg ~/.background-image fill'';
           always = true;
