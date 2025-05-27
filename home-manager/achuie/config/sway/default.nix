@@ -312,12 +312,18 @@ in
         "${modifier}+r" = ''mode "resize"'';
         "${modifier}+m" = ''mode "music"'';
       };
+      input = {
+        "9354:33640:Telink_Wireless_Receiver" = { xkb_options = "ctrl:swapcaps"; };
+      };
       defaultWorkspace = "workspace number ${ws1}";
       startup = [
         { command = ''wezterm start --class "wezterm-system"''; }
         { command = ''wezterm start --class "wezterm-audio" -- zsh -is eval 'pulsemixer' ''; }
         # Give Sway a little time to startup before starting kanshi
-        { command = ''${pkgs.coreutils}/bin/sleep 5; systemctl --user start kanshi.service''; }
+        {
+          command = ''${pkgs.coreutils}/bin/sleep 5; systemctl --user start kanshi.service''; 
+          always = true;
+        }
         {
           command = ''sway output "*" bg ~/.background-image fill'';
           always = true;
