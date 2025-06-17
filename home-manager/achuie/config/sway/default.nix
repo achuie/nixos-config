@@ -71,24 +71,26 @@ in
           {
             monitor = "";
             text = "$TIME";
+            text_align = "left";
             color = "rgba(211, 215, 235, 1.0)";
-            font_size = 80;
+            font_size = 240;
             font_family = "Fira Code Custom";
-            position = "0, 200";
-            halign = "center";
-            valign = "center";
-            shadow_passes = 2;
+            position = "2%, 8%";
+            halign = "left";
+            valign = "bottom";
+            shadow_passes = 3;
           }
           {
             monitor = "";
             text = ''cmd[update:43200000] echo "$(date +'%A, %B %e, %Y')"'';
+            text_align = "left";
             color = "rgba(211, 215, 235, 1.0)";
-            font_size = 24;
+            font_size = 60;
             font_family = "Fira Code Custom";
-            position = "0, 120";
-            halign = "center";
-            valign = "center";
-            shadow_passes = 2;
+            position = "3%, 5%";
+            halign = "left";
+            valign = "bottom";
+            shadow_passes = 3;
           }
         ];
         input-field = [
@@ -106,7 +108,7 @@ in
             placeholder_text = "<i>Password for <span foreground='##33ccff'>$USER</span></i>";
             fade_on_empty = false;
             rounding = 15;
-            position = "0, -20";
+            position = "0, 10%";
             halign = "center";
             valign = "center";
             shadow_passes = 2;
