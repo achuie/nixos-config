@@ -324,6 +324,10 @@ in
           always = true;
         }
         {
+          command = ''${pkgs.systemd}/bin/systemctl --user restart swayidle.service'';
+          always = true;
+        }
+        {
           command = ''sway output "*" bg ~/.background-image fill'';
           always = true;
         }
