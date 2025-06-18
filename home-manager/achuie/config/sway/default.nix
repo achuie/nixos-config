@@ -319,17 +319,16 @@ in
       };
       defaultWorkspace = "workspace number ${ws1}";
       startup = [
-        { command = ''wezterm start --class "wezterm-system"''; }
-        { command = ''wezterm start --class "wezterm-audio" -- zsh -is eval 'pulsemixer' ''; }
-        # Give Sway a little time to startup before starting kanshi
         {
-          command = ''${pkgs.systemd}/bin/systemctl --user start kanshi.service'';
+          command = ''${pkgs.systemd}/bin/systemctl --user restart kanshi.service'';
           always = true;
         }
         {
           command = ''sway output "*" bg ~/.background-image fill'';
           always = true;
         }
+        { command = ''wezterm start --class "wezterm-system"''; }
+        { command = ''wezterm start --class "wezterm-audio" -- zsh -is eval 'pulsemixer' ''; }
       ];
       window.commands = [
         {
