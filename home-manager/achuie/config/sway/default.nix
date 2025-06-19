@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, pkgs, ... }@args:
 
 let
   modifier = config.wayland.windowManager.sway.config.modifier;
@@ -15,7 +15,7 @@ let
   ws9 = "9";
   ws10 = "10";
 
-  swaypkg = pkgs.swayfx;
+  swaypkg = config.nullable.wrap pkgs.swayfx;
 
   dyn_tags = pkgs.writeShellScript "dyn_tags" ''
     # Focus a workspace or create a new one.
@@ -29,18 +29,27 @@ let
       MENUPROMPT="move:"
     fi
 
-    $SWAYMSG $MOVE workspace $($SWAYMSG -t get_workspaces | ${pkgs.jq}/bin/jq -M '.[] | .name' \
-      | tr -d '"' | sort -u | ${pkgs.tofi}/bin/tofi -c ${./tofi_run_theme} --anchor=bottom \
+    $SWAYMSG $MOVE workspace $($SWAYMSG -t get_workspaces | ${config.nullable.wrap pkgs.jq}/bin/jq -M '.[] | .name' \
+      | tr -d '"' | sort -u | ${config.nullable.wrap pkgs.tofi}/bin/tofi -c ${./tofi_run_theme} --anchor=bottom \
       --prompt-text=" $MENUPROMPT " --margin-bottom=24 --require-match=false)
   '';
   color-picker = pkgs.writeShellScriptBin "color-picker" ''
     # Pick a color to clipboard
 
-    ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp -p)" -t ppm - | ${pkgs.imagemagick}/bin/magick - -format '%[pixel:p{0,0}]' txt:- | ${pkgs.wl-clipboard-rs}/bin/wl-copy
+    ${config.nullable.wrap pkgs.grim}/bin/grim -g "$(${config.nullable.wrap pkgs.slurp}/bin/slurp -p)" -t ppm - \
+      | ${config.nullable.wrap pkgs.imagemagick}/bin/magick - -format '%[pixel:p{0,0}]' txt:- \
+      | ${config.nullable.wrap pkgs.wl-clipboard-rs}/bin/wl-copy
   '';
 in
 {
-  home.packages = with pkgs; [
+  imports = [
+    ./hyprlock
+    ./dunst
+    (import ./swayidle (args // { inherit swaypkg; }))
+    ../../../lib/nullable.nix
+  ];
+
+  home.packages = map (pkg: config.nullable.wrap pkg) (with pkgs; [
     tofi
     i3status-rust
     jq
@@ -52,93 +61,8 @@ in
     swayidle
     bc
     color-picker
-  ];
-  programs = {
-    swayimg = {
-      enable = true;
-      settings = { viewer = { window = "#ffffffff"; }; };
-    };
-    hyprlock = {
-      enable = true;
-      settings = {
-        general = { ignore_empty_input = true; };
-        background = [
-          {
-            path = "~/.background-image";
-          }
-        ];
-        label = [
-          {
-            monitor = "";
-            text = "$TIME";
-            text_align = "left";
-            color = "rgba(211, 215, 235, 1.0)";
-            font_size = 240;
-            font_family = "Fira Code Custom";
-            position = "2%, 8%";
-            halign = "left";
-            valign = "bottom";
-            shadow_passes = 3;
-          }
-          {
-            monitor = "";
-            text = ''cmd[update:43200000] echo "$(date +'%A, %B %e, %Y')"'';
-            text_align = "left";
-            color = "rgba(211, 215, 235, 1.0)";
-            font_size = 60;
-            font_family = "Fira Code Custom";
-            position = "3%, 5%";
-            halign = "left";
-            valign = "bottom";
-            shadow_passes = 3;
-          }
-        ];
-        input-field = [
-          {
-            monitor = "";
-            size = "20%, 5%";
-            outline_thickness = 3;
-            inner_color = "rgba(50, 52, 74, 0.7)";
-            outer_color = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-            check_color = "rgba(00ff99ee) rgba(ff6633ee) 120deg";
-            fail_color = "rgba(ff6633ee) rgba(ff0066ee) 40deg";
-            capslock_color = "rgba(ff9e64ee) rgba(ff7800ee) 20deg";
-            font_color = "rgb(143, 143, 143)";
-            font_family = "Iosevka Custom";
-            placeholder_text = "<i>Password for <span foreground='##33ccff'>$USER</span></i>";
-            fade_on_empty = false;
-            rounding = 15;
-            position = "0, 10%";
-            halign = "center";
-            valign = "center";
-            shadow_passes = 2;
-          }
-        ];
-      };
-    };
-  };
-  services = {
-    dunst = {
-      enable = true;
-      iconTheme = {
-        package = config.home.pointerCursor.package or pkgs.adwaita-icon-theme;
-        name = config.home.pointerCursor.name or "Adwaita";
-      };
-      configFile = "${./dunstrc}";
-    };
-    swayidle = {
-      enable = true;
-      extraArgs = [ "-w" ];
-      events = [];
-      timeouts = [
-        {
-          timeout = 15;
-          command = ''if ${pkgs.procps}/bin/pgrep -x hyprlock; then ${swaypkg}/bin/swaymsg "output * power off"; fi'';
-          resumeCommand = ''${swaypkg}/bin/swaymsg "output * power on"'';
-        }
-      ];
-    };
-  };
+  ]);
+
   wayland.windowManager.sway = {
     enable = true;
     package = swaypkg;
@@ -149,7 +73,7 @@ in
     config = {
       modifier = "Mod4";
       floating.modifier = "${modifier}";
-      menu = ''${pkgs.tofi}/bin/tofi-run -c ${./tofi_run_theme} | xargs swaymsg exec --'';
+      menu = ''${config.nullable.wrap pkgs.tofi}/bin/tofi-run -c ${./tofi_run_theme} | xargs swaymsg exec --'';
       window.titlebar = true;
       workspaceAutoBackAndForth = true;
       fonts = { names = [ "Fira Code Custom" ]; size = 10.0; };
@@ -301,14 +225,14 @@ in
         '';
 
         # lock the screen
-        "${modifier}+o" = "exec ${pkgs.hyprlock}/bin/hyprlock";
+        "${modifier}+o" = "exec ${config.nullable.wrap pkgs.hyprlock}/bin/hyprlock";
 
-        "${modifier}+Shift+s" = "exec ${pkgs.grim}/bin/grim ~/$(date +'%s_screenshot.png')";
+        "${modifier}+Shift+s" = "exec ${config.nullable.wrap pkgs.grim}/bin/grim ~/$(date +'%s_screenshot.png')";
         "${modifier}+Control+s" = ''
-          exec '${pkgs.grim}/bin/grim -g "$(swaymsg -t get_tree | ${pkgs.jq}/bin/jq -j '.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"')" ~/$(date +'%s_screenshot.png')'
+          exec '${config.nullable.wrap pkgs.grim}/bin/grim -g "$(swaymsg -t get_tree | ${config.nullable.wrap pkgs.jq}/bin/jq -j '.. | select(.type?) | select(.focused).rect | "\(.x),\(.y) \(.width)x\(.height)"')" ~/$(date +'%s_screenshot.png')'
         '';
         "${modifier}+Mod1+s" = ''
-          exec '${pkgs.grim}/bin/grim -g "$(slurp)" - | ${pkgs.wl-clipboard-rs}/bin/wl-copy -t image/png'
+          exec '${config.nullable.wrap pkgs.grim}/bin/grim -g "$(slurp)" - | ${config.nullable.wrap pkgs.wl-clipboard-rs}/bin/wl-copy -t image/png'
         '';
 
         "${modifier}+r" = ''mode "resize"'';
@@ -320,11 +244,11 @@ in
       defaultWorkspace = "workspace number ${ws1}";
       startup = [
         {
-          command = ''${pkgs.systemd}/bin/systemctl --user restart kanshi.service'';
+          command = ''${config.nullable.wrap pkgs.systemd}/bin/systemctl --user restart kanshi.service'';
           always = true;
         }
         {
-          command = ''${pkgs.systemd}/bin/systemctl --user restart swayidle.service'';
+          command = ''${config.nullable.wrap pkgs.systemd}/bin/systemctl --user restart swayidle.service'';
           always = true;
         }
         {
@@ -404,24 +328,12 @@ in
         {
           position = "bottom";
           fonts = { names = [ "Fira Code Custom" "Font Awesome 6 Free" ]; size = 10.0; };
-          statusCommand = "${pkgs.i3status-rust}/bin/i3status-rs ${./i3status-rust.toml}";
+          statusCommand = "${config.nullable.wrap pkgs.i3status-rust}/bin/i3status-rs ${./i3status-rust.toml}";
         }
       ];
     };
     extraConfig = ''
       titlebar_padding 2
     '';
-  };
-  # For monitor hot swapping
-  systemd.user.services.kanshi = {
-    Unit.Description = "kanshi daemon";
-    Service = {
-      Type = "simple";
-      Environment = [
-        "WAYLAND_DISPLAY=wayland-1"
-        "DISPLAY=:0"
-      ];
-      ExecStart = ''${pkgs.kanshi}/bin/kanshi -c ${./kanshi_config}'';
-    };
   };
 }

@@ -5,7 +5,7 @@ let
 
   fakePkg = orig:
     builtins.trace
-    "\n  nullable skipped ${orig}\n"
+    " nullable skipped ${orig}"
     {
     __nullable = nullMarker;
     __toString = _: "";
