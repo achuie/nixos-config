@@ -50,6 +50,7 @@
       homeConfigurations =
         let
           system = "x86_64-linux";
+
           firacode-dv = nixpkgs.legacyPackages.${system}.stdenvNoCC.mkDerivation {
             pname = "firacode-custom";
             version = "achuie";
@@ -94,6 +95,20 @@
             };
             modules = [ ./home-manager/achuie/home.nix ];
           };
+          "achuie@arch" = let
+            pkgs = nixpkgs.legacyPackages.${system};
+            # nullify = import ./lib/nullify.nix { lib = nixpkgs.lib; };
+            # rawConfig = import ./home-manager/achuie/arch.nix { inherit pkgs; };
+            # mask = nullify.debugPrintMask (nullify.mkDerivationMask rawConfig);
+          in
+            home-manager.lib.homeManagerConfiguration {
+              inherit pkgs;
+              extraSpecialArgs = {
+                inherit (self) inputs outputs;
+                # nullMask = mask;
+              };
+              modules = [ ./home-manager/achuie/arch.nix ];
+            };
         };
     };
 }

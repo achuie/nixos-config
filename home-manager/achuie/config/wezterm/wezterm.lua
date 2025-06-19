@@ -123,6 +123,7 @@ local config = {
     'Fira Code Custom',
     'Iosevka Custom Extended',
     'Rec Mono Custom',
+    'monospace',
     'Font Awesome 6 Free',
   },
   font_size = 12,
