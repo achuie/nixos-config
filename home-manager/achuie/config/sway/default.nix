@@ -363,21 +363,27 @@ in
       modes = {
         resize = {
           # Shrink/grow window size.
-          h = "resize shrink width 5 px or 5 ppt";
-          j = "resize grow height 5 px or 5 ppt";
-          k = "resize shrink height 5 px or 5 ppt";
-          l = "resize grow width 5 px or 5 ppt";
+          h = "resize shrink width 5 ppt or 10 px";
+          j = "resize grow height 5 ppt or 10 px";
+          k = "resize shrink height 5 ppt or 10 px";
+          l = "resize grow width 5 ppt or 10 px";
 
           # Same bindings, but for the arrow keys
-          Left = "resize shrink width 5 px or 5 ppt";
-          Down = "resize grow height 5 px or 5 ppt";
-          Up = "resize shrink height 5 px or 5 ppt";
-          Right = "resize grow width 5 px or 5 ppt";
+          "Shift+h" = "resize shrink width 5 px";
+          "Shift+j" = "resize grow height 5 px";
+          "Shift+k" = "resize shrink height 5 px";
+          "Shift+l" = "resize grow width 5 px";
 
           # Resize and move to corner
           c = ''
             floating enable, resize set 20 ppt 20 ppt, \
             exec --no-startup-id ${./move_screen_ppt.sh} 79 77
+          '';
+
+          # Fix scratchpad size
+          s = ''
+            move position center, \
+            resize set width 50 ppt height 70 ppt
           '';
 
           # Back to normal: Enter or Escape
