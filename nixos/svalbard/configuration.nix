@@ -86,11 +86,26 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
-  users.users.achuie = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ];
-    shell = pkgs.zsh;
+  users.users = {
+    achuie = {
+      isNormalUser = true;
+      extraGroups = [ "wheel" "networkmanager" ];
+      shell = pkgs.zsh;
+    };
+
+    jilaada = {
+      isNormalUser = true;
+      extraGroups = [ "networkmanager" ];
+      shell = pkgs.zsh;
+    };
+
+    bard = {
+      isNormalUser = true;
+      extraGroups = [ "networkmanager" ];
+      shell = pkgs.zsh;
+    };
   };
+
   programs.zsh = {
     enable = true;
     enableGlobalCompInit = false;
@@ -110,6 +125,14 @@
   environment = {
     systemPackages = with pkgs; [ vim git lynx fd ripgrep rsync pciutils btop killall autossh ];
     pathsToLink = [ "/libexec" ];
+  };
+
+  services.desktopManager.gnome.enable = true;
+  services.gnome = {
+    localsearch.enable = false;
+    tinysparql.enable = false;
+    games.enable = false;
+    core-developer-tools.enable = false;
   };
 
   security = {

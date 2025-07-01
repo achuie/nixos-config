@@ -94,6 +94,13 @@
             };
             modules = [ ./home-manager/achuie/home.nix ];
           };
+          "bard@svalbard" = home-manager.lib.homeManagerConfiguration {
+            pkgs = nixpkgs.legacyPackages.${system};
+            extraSpecialArgs = {
+              inherit (self) inputs outputs;
+            };
+            modules = [ ./home-manager/bard/home.nix ];
+          };
         };
     };
 }
