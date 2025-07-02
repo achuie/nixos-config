@@ -129,7 +129,7 @@ in
     swayidle = {
       enable = true;
       extraArgs = [ "-w" ];
-      events = [];
+      events = [ ];
       timeouts = [
         {
           timeout = 15;

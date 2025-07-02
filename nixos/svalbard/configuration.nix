@@ -6,7 +6,8 @@
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [
+      # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
 
@@ -41,7 +42,7 @@
 
   networking.hostName = "svalbard";
   networking.hostId = "1467377d";
-  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking.networkmanager.enable = true; # Easiest to use and most distros use this by default.
 
   time.timeZone = "Asia/Tokyo";
 
@@ -123,7 +124,27 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment = {
-    systemPackages = with pkgs; [ vim git lynx fd ripgrep rsync pciutils btop killall autossh ];
+    systemPackages = with pkgs; [
+      vim
+      git
+      lynx
+      fd
+      ripgrep
+      rsync
+      pciutils
+      btop
+      killall
+      autossh
+      (writeScriptBin "launch-gnome-session" ''
+        export XDG_SESSION_TYPE=wayland
+        export XDG_SESSION_CLASS=user
+        export XDG_CURRENT_DESKTOP=GNOME
+        export XDG_SESSION_DESKTOP=GNOME
+        export GDMSESSION=gnome
+
+        exec dbus-run-session -- gnome-session --session=gnome
+      '')
+    ];
     pathsToLink = [ "/libexec" ];
   };
 
@@ -155,7 +176,7 @@
       #   });
       # '';
     };
-    pam.services.hyprlock = {};
+    pam.services.hyprlock = { };
   };
 
   # Don’t shutdown when power button is short-pressed
