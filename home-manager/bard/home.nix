@@ -16,6 +16,8 @@
     username = "bard";
     homeDirectory = "/home/bard";
     packages = with pkgs; [
+      font-awesome
+
       inputs.achuie-nvim.packages.${pkgs.system}.default
       mpv
     ];
