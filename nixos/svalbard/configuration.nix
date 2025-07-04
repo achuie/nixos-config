@@ -132,6 +132,7 @@
       ripgrep
       rsync
       pciutils
+      smartmontools
       btop
       killall
       autossh
