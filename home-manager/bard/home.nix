@@ -17,6 +17,9 @@
     username = "bard";
     homeDirectory = "/home/bard";
     packages = with pkgs; [
+      noto-fonts-cjk-serif
+      noto-fonts-cjk-sans
+      noto-fonts-color-emoji
       font-awesome
 
       inputs.achuie-nvim.packages.${pkgs.system}.default

@@ -136,6 +136,7 @@
       btop
       killall
       autossh
+
       (writeScriptBin "launch-gnome-session" ''
         export XDG_SESSION_TYPE=wayland
         export XDG_SESSION_CLASS=user
@@ -145,6 +146,8 @@
 
         exec dbus-run-session -- gnome-session --session=gnome
       '')
+      gnomeExtensions.night-theme-switcher
+      gnome-tweaks
     ];
     pathsToLink = [ "/libexec" ];
   };
