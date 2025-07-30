@@ -4,7 +4,6 @@
   imports = [
     ../achuie/config/tmux
     ../achuie/config/zsh
-    ../achuie/config/hyprlock
   ];
   nixpkgs = {
     overlays = [ ];
