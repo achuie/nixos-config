@@ -3,6 +3,7 @@
 let
   modifier = config.wayland.windowManager.sway.config.modifier;
   cfg = config.wayland.windowManager.sway.config;
+  swaypkg = config.wayland.windowManager.sway.package;
 
   ws1 = "1";
   ws2 = "2";
@@ -14,8 +15,6 @@ let
   ws8 = "8";
   ws9 = "9";
   ws10 = "10";
-
-  swaypkg = pkgs.swayfx;
 
   dyn_tags = pkgs.writeShellScript "dyn_tags" ''
     # Focus a workspace or create a new one.
@@ -84,7 +83,6 @@ in
   };
   wayland.windowManager.sway = {
     enable = true;
-    package = swaypkg;
     wrapperFeatures.gtk = true; # Fixes common issues with GTK 3 apps
     systemd.enable = true;
     # Due to: https://github.com/nix-community/home-manager/issues/5379
@@ -294,14 +292,14 @@ in
           criteria = { app_id = "wezterm-audio"; };
           command = ''mark "beta", move scratchpad'';
         }
-        {
-          criteria = { app_id = ".*wezterm.*"; };
-          command = ''blur enable'';
-        }
-        {
-          criteria = { floating = true; };
-          command = ''shadows enable'';
-        }
+        # {
+        #   criteria = { app_id = ".*wezterm.*"; };
+        #   command = ''blur enable'';
+        # }
+        # {
+        #   criteria = { floating = true; };
+        #   command = ''shadows enable'';
+        # }
       ];
       modes = {
         resize = {

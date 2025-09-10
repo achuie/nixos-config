@@ -184,10 +184,10 @@
   };
 
   # Don’t shutdown when power button is short-pressed
-  services.logind.extraConfig = ''
-    HandlePowerKey=ignore
-    HandlePowerKeyLongPress=poweroff
-  '';
+  services.logind.settings.Login = {
+    handlePowerKey = "ignore";
+    handlePowerKeyLongPress = "poweroff";
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
