@@ -4,7 +4,7 @@
   home.file.".zsh/functions/prompt_achuie_setup".source = ./achuie.zsh;
   programs.zsh = {
     enable = true;
-    dotDir = ".zsh";
+    dotDir = "${config.home.homeDirectory}/.zsh";
     enableCompletion = true;
     autocd = false;
     completionInit = ''
