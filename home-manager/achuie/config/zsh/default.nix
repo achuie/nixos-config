@@ -4,7 +4,7 @@
   home.file.".zsh/functions/prompt_achuie_setup".source = ./achuie.zsh;
   programs.zsh = {
     enable = true;
-    dotDir = ".zsh";
+    dotDir = "${config.home.homeDirectory}/.zsh";
     enableCompletion = true;
     autocd = false;
     completionInit = ''
@@ -37,7 +37,7 @@
       KEYTIMEOUT = 1;
     };
     shellAliases = {
-      ls = "ls --color=auto -N";
+      ls = "ls --color=auto";
       git-log = "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %Cgreen(%cr) %C(bold blue)<%an>%Creset %<(50,trunc)%s' --all";
       git-vlog = "git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %Cgreen%aD%Creset%n\'\'          %C(bold blue)<%an>%Creset %<(80,trunc)%s' --all";
     };

@@ -6,7 +6,8 @@
 
 {
   imports =
-    [ # Include the results of the hardware scan.
+    [
+      # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
 
@@ -41,7 +42,7 @@
 
   networking.hostName = "svalbard";
   networking.hostId = "1467377d";
-  networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
+  networking.networkmanager.enable = true; # Easiest to use and most distros use this by default.
 
   time.timeZone = "Asia/Tokyo";
 
@@ -86,11 +87,26 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
-  users.users.achuie = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" "networkmanager" ];
-    shell = pkgs.zsh;
+  users.users = {
+    achuie = {
+      isNormalUser = true;
+      extraGroups = [ "wheel" "networkmanager" ];
+      shell = pkgs.zsh;
+    };
+
+    jilaada = {
+      isNormalUser = true;
+      extraGroups = [ "networkmanager" ];
+      shell = pkgs.zsh;
+    };
+
+    bard = {
+      isNormalUser = true;
+      extraGroups = [ "networkmanager" ];
+      shell = pkgs.zsh;
+    };
   };
+
   programs.zsh = {
     enable = true;
     enableGlobalCompInit = false;
@@ -108,8 +124,40 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment = {
-    systemPackages = with pkgs; [ vim git lynx fd ripgrep rsync pciutils btop killall autossh ];
+    systemPackages = with pkgs; [
+      vim
+      git
+      lynx
+      fd
+      ripgrep
+      rsync
+      pciutils
+      smartmontools
+      btop
+      killall
+      autossh
+
+      (writeScriptBin "launch-gnome-session" ''
+        export XDG_SESSION_TYPE=wayland
+        export XDG_SESSION_CLASS=user
+        export XDG_CURRENT_DESKTOP=GNOME
+        export XDG_SESSION_DESKTOP=GNOME
+        export GDMSESSION=gnome
+
+        exec dbus-run-session -- gnome-session --session=gnome
+      '')
+      gnomeExtensions.night-theme-switcher
+      gnome-tweaks
+    ];
     pathsToLink = [ "/libexec" ];
+  };
+
+  services.desktopManager.gnome.enable = true;
+  services.gnome = {
+    localsearch.enable = false;
+    tinysparql.enable = false;
+    games.enable = false;
+    core-developer-tools.enable = false;
   };
 
   security = {
@@ -132,14 +180,14 @@
       #   });
       # '';
     };
-    pam.services.hyprlock = {};
+    pam.services.hyprlock = { };
   };
 
   # Don’t shutdown when power button is short-pressed
-  services.logind.extraConfig = ''
-    HandlePowerKey=ignore
-    HandlePowerKeyLongPress=poweroff
-  '';
+  services.logind.settings.Login = {
+    handlePowerKey = "ignore";
+    handlePowerKeyLongPress = "poweroff";
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

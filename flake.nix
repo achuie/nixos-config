@@ -60,7 +60,7 @@
               mkdir -p $output
               cp ./nix-flakes/firacode/Fira\ Code\ Custom/* $output
             '';
-            meta = {};
+            meta = { };
           };
           iosevka-dv = nixpkgs.legacyPackages.${system}.stdenvNoCC.mkDerivation {
             pname = "iosevka-custom";
@@ -72,7 +72,7 @@
               mkdir -p $output
               cp ./nix-flakes/iosevka/Iosevkacustom/* $output
             '';
-            meta = {};
+            meta = { };
           };
         in
         {
@@ -93,6 +93,13 @@
               iosevka = iosevka-dv;
             };
             modules = [ ./home-manager/achuie/home.nix ];
+          };
+          "bard@svalbard" = home-manager.lib.homeManagerConfiguration {
+            pkgs = nixpkgs.legacyPackages.${system};
+            extraSpecialArgs = {
+              inherit (self) inputs outputs;
+            };
+            modules = [ ./home-manager/bard/home.nix ];
           };
         };
     };

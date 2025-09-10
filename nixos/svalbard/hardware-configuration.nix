@@ -5,7 +5,8 @@
 
 {
   imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
+    [
+      (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
@@ -14,35 +15,39 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/90f6abc1-1b2e-444c-800b-68a041d62fdb";
+    {
+      device = "/dev/disk/by-uuid/90f6abc1-1b2e-444c-800b-68a041d62fdb";
       fsType = "btrfs";
       options = [ "compress=zstd" "noatime" ];
     };
 
   fileSystems."/boot/efi" =
-    { device = "/dev/disk/by-uuid/4E7A-8F9F";
+    {
+      device = "/dev/disk/by-uuid/4E7A-8F9F";
       fsType = "vfat";
       options = [ "fmask=0022" "dmask=0022" ];
     };
 
   fileSystems."/home" =
-    { device = "ztank/home";
+    {
+      device = "ztank/home";
       fsType = "zfs";
     };
 
   fileSystems."/media" =
-    { device = "ztank/media";
+    {
+      device = "ztank/media";
       fsType = "zfs";
     };
 
   fileSystems."/share" =
-    { device = "ztank/share";
+    {
+      device = "ztank/share";
       fsType = "zfs";
     };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/f9d5b16c-14c9-4935-96dd-90020c8264cf"; }
-    ];
+    [{ device = "/dev/disk/by-uuid/f9d5b16c-14c9-4935-96dd-90020c8264cf"; }];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's

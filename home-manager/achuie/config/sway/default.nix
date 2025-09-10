@@ -3,6 +3,7 @@
 let
   modifier = config.wayland.windowManager.sway.config.modifier;
   cfg = config.wayland.windowManager.sway.config;
+  swaypkg = config.wayland.windowManager.sway.package;
 
   ws1 = "1";
   ws2 = "2";
@@ -14,8 +15,6 @@ let
   ws8 = "8";
   ws9 = "9";
   ws10 = "10";
-
-  swaypkg = pkgs.swayfx;
 
   dyn_tags = pkgs.writeShellScript "dyn_tags" ''
     # Focus a workspace or create a new one.
@@ -40,6 +39,7 @@ let
   '';
 in
 {
+  imports = [ ../hyprlock ];
   home.packages = with pkgs; [
     tofi
     i3status-rust
@@ -58,64 +58,6 @@ in
       enable = true;
       settings = { viewer = { window = "#ffffffff"; }; };
     };
-    hyprlock = {
-      enable = true;
-      settings = {
-        general = { ignore_empty_input = true; };
-        background = [
-          {
-            path = "~/.background-image";
-          }
-        ];
-        label = [
-          {
-            monitor = "";
-            text = "$TIME";
-            text_align = "left";
-            color = "rgba(211, 215, 235, 1.0)";
-            font_size = 240;
-            font_family = "Fira Code Custom";
-            position = "2%, 8%";
-            halign = "left";
-            valign = "bottom";
-            shadow_passes = 3;
-          }
-          {
-            monitor = "";
-            text = ''cmd[update:43200000] echo "$(date +'%A, %B %e, %Y')"'';
-            text_align = "left";
-            color = "rgba(211, 215, 235, 1.0)";
-            font_size = 60;
-            font_family = "Fira Code Custom";
-            position = "3%, 5%";
-            halign = "left";
-            valign = "bottom";
-            shadow_passes = 3;
-          }
-        ];
-        input-field = [
-          {
-            monitor = "";
-            size = "20%, 5%";
-            outline_thickness = 3;
-            inner_color = "rgba(50, 52, 74, 0.7)";
-            outer_color = "rgba(33ccffee) rgba(00ff99ee) 45deg";
-            check_color = "rgba(00ff99ee) rgba(ff6633ee) 120deg";
-            fail_color = "rgba(ff6633ee) rgba(ff0066ee) 40deg";
-            capslock_color = "rgba(ff9e64ee) rgba(ff7800ee) 20deg";
-            font_color = "rgb(143, 143, 143)";
-            font_family = "Iosevka Custom";
-            placeholder_text = "<i>Password for <span foreground='##33ccff'>$USER</span></i>";
-            fade_on_empty = false;
-            rounding = 15;
-            position = "0, 10%";
-            halign = "center";
-            valign = "center";
-            shadow_passes = 2;
-          }
-        ];
-      };
-    };
   };
   services = {
     dunst = {
@@ -129,7 +71,7 @@ in
     swayidle = {
       enable = true;
       extraArgs = [ "-w" ];
-      events = [];
+      events = [ ];
       timeouts = [
         {
           timeout = 15;
@@ -141,7 +83,6 @@ in
   };
   wayland.windowManager.sway = {
     enable = true;
-    package = swaypkg;
     wrapperFeatures.gtk = true; # Fixes common issues with GTK 3 apps
     systemd.enable = true;
     # Due to: https://github.com/nix-community/home-manager/issues/5379
@@ -351,14 +292,14 @@ in
           criteria = { app_id = "wezterm-audio"; };
           command = ''mark "beta", move scratchpad'';
         }
-        {
-          criteria = { app_id = ".*wezterm.*"; };
-          command = ''blur enable'';
-        }
-        {
-          criteria = { floating = true; };
-          command = ''shadows enable'';
-        }
+        # {
+        #   criteria = { app_id = ".*wezterm.*"; };
+        #   command = ''blur enable'';
+        # }
+        # {
+        #   criteria = { floating = true; };
+        #   command = ''shadows enable'';
+        # }
       ];
       modes = {
         resize = {

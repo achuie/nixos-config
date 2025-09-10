@@ -33,7 +33,7 @@
       isNormalUser = true;
       extraGroups = [ "wheel" ];
       openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJQ1/DesaSOCyZALVMFENA3DORBXN/+hoGVjUo/SOo2h achuie@sprocket"
+        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPE/idtQ9eNHQJ2p7YiiHrDPGJxQnwXB2/grHhZoIRcx achuie@sprocket"
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICPvDDEW8oP7z/1C8RRh9UI0SlSwodbktUQwXuEMcF8n achuie@svalbard"
       ];
     };
