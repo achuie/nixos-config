@@ -136,29 +136,11 @@
       btop
       killall
       autossh
-
-      (writeScriptBin "launch-gnome-session" ''
-        export XDG_SESSION_TYPE=wayland
-        export XDG_SESSION_CLASS=user
-        export XDG_CURRENT_DESKTOP=GNOME
-        export XDG_SESSION_DESKTOP=GNOME
-        export GDMSESSION=gnome
-
-        exec dbus-run-session -- gnome-session --session=gnome
-      '')
-      gnomeExtensions.night-theme-switcher
-      gnome-tweaks
     ];
     pathsToLink = [ "/libexec" ];
   };
 
-  services.desktopManager.gnome.enable = true;
-  services.gnome = {
-    localsearch.enable = false;
-    tinysparql.enable = false;
-    games.enable = false;
-    core-developer-tools.enable = false;
-  };
+  services.desktopManager.plasma6.enable = true;
 
   security = {
     rtkit.enable = true;
