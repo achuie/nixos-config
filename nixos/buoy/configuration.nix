@@ -70,7 +70,7 @@
     enable = true;
     package = pkgs.caddy.withPlugins {
       plugins = [ "github.com/caddy-dns/porkbun@v0.3.1" ];
-      hash = "sha256-sa+L2YoTM1ZfhfowoCZwmggrUsqw0NmGWRK45TevxFo=";
+      hash = "sha256-g/Nmi4X/qlqqjY/zoG90iyP5Y5fse6Akr8exG5Spf08=";
     };
     globalConfig = ''    
       acme_dns porkbun {
@@ -91,6 +91,7 @@
               <h1 style="font-size:18rem\;text-align:center">許</h1>
               <br>
               <a href="https://andrew.huie.dev"><p style="text-align:center">andrew.huie.dev</p></a>
+              <a href="https://will.huie.dev"><p style="text-align:center">will.huie.dev</p></a>
             </html>
           '';
         in
@@ -125,9 +126,26 @@
         '';
       };
       "www.will.huie.dev" = { extraConfig = "redir https://will.huie.dev{uri}"; };
+
+      "isthmus.huie.dev" = {
+        extraConfig = ''
+          reverse_proxy * 127.0.0.1:8080
+        '';
+      };
     };
   };
   systemd.services.caddy.serviceConfig.EnvironmentFile = [ "/etc/secrets/porkbun_env" ];
+
+  services.headscale = {
+    enable = true;
+    settings = {
+      server_url = "https://isthmus.huie.dev:443";
+      dns = {
+        base_domain = "tailnet.huie.dev";
+        nameservers.global = [ "1.1.1.1" ];
+      };
+    };
+  };
 
   # Enable the OpenSSH daemon.
   services.openssh = {
@@ -179,4 +197,3 @@
   system.stateVersion = "24.05"; # Did you read the comment?
 
 }
-
