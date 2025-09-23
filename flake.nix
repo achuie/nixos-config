@@ -9,6 +9,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    agenix = {
+      url = "github:yaxitech/ragenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     dotfiles = {
       url = "github:achuie/dotfiles";
       flake = false;
@@ -19,7 +23,7 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, home-manager, ... }:
+  outputs = { self, nixpkgs, nixos-hardware, home-manager, agenix, ... }:
     let
       forAllSystems = f:
         nixpkgs.lib.genAttrs [ "x86_64-linux" ] (system:
@@ -38,12 +42,25 @@
             nixos-hardware.nixosModules.common-cpu-intel-cpu-only
             nixos-hardware.nixosModules.common-gpu-amd
             ./nixos/svalbard/configuration.nix
+            { environment.systemPackages = [ agenix.packages.x86_64-linux.default ]; }
           ];
         };
         buoy = nixpkgs.lib.nixosSystem {
           specialArgs = { inherit (self) inputs; };
           modules = [
             ./nixos/buoy/configuration.nix
+            agenix.nixosModules.default
+            {
+              age.secrets = {
+                porkbun_api.file = ./secrets/porkbun_api.age;
+                headscale_acl = {
+                  file = ./secrets/headscale_acl.age;
+                  mode = "770";
+                  owner = "headscale";
+                  group = "headscale";
+                };
+              };
+            }
           ];
         };
       };

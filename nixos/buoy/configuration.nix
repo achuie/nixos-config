@@ -134,7 +134,7 @@
       };
     };
   };
-  systemd.services.caddy.serviceConfig.EnvironmentFile = [ "/etc/secrets/porkbun_env" ];
+  systemd.services.caddy.serviceConfig.EnvironmentFile = [ config.age.secrets.porkbun_api.path ];
 
   services.headscale = {
     enable = true;
@@ -144,6 +144,7 @@
         base_domain = "tailnet.huie.dev";
         nameservers.global = [ "1.1.1.1" ];
       };
+      policy.path = config.age.secrets.headscale_acl.path;
     };
   };
 
