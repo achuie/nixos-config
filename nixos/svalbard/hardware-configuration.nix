@@ -63,5 +63,6 @@
     opencl.enable = true;
     amdvlk.enable = true;
   };
+  hardware.graphics.extraPackages = with pkgs; [ rocmPackages.clr.icd ];
   environment.variables = { ROC_ENABLE_PRE_VEGA = "1"; };
 }
