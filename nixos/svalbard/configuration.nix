@@ -184,7 +184,11 @@
   services.tailscale = {
     enable = true;
     openFirewall = true;
-    extraSetFlags = [ "--ssh" ];
+    authKeyFile = config.age.secrets.svalbard_tailscale_key.path;
+    extraUpFlags = [
+      "--login-server=https://isthmus.huie.dev"
+      "--advertise-tags=tag:server"
+    ];
   };
 
   # Enable the OpenSSH daemon.

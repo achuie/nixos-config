@@ -42,6 +42,9 @@
             nixos-hardware.nixosModules.common-cpu-intel-cpu-only
             nixos-hardware.nixosModules.common-gpu-amd
             ./nixos/svalbard/configuration.nix
+
+            agenix.nixosModules.default
+            { age.secrets.svalbard_tailscale_key.file = ./secrets/svalbard_tailscale_key.age; }
             { environment.systemPackages = [ agenix.packages.x86_64-linux.default ]; }
           ];
         };
@@ -49,6 +52,7 @@
           specialArgs = { inherit (self) inputs; };
           modules = [
             ./nixos/buoy/configuration.nix
+
             agenix.nixosModules.default
             {
               age.secrets = {
