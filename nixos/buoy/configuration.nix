@@ -141,7 +141,7 @@
     settings = {
       server_url = "https://isthmus.huie.dev:443";
       dns = {
-        base_domain = "tailnet.huie.dev";
+        base_domain = "tn.huie.dev";
         nameservers.global = [ "1.1.1.1" ];
       };
       policy.path = config.age.secrets.headscale_acl.path;
@@ -159,6 +159,8 @@
       GatewayPorts = "yes";
     };
   };
+
+  services.fail2ban.enable = true;
 
   # Open ports in the firewall.
   networking.firewall = {

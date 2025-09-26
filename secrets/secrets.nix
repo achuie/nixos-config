@@ -7,7 +7,7 @@ let
   systems = [ svalbard buoy ];
 in
 {
-  "porkbun_api.age".publicKeys = [ buoy achuie ];
+  "porkbun_api.age".publicKeys = systems ++ [ achuie ];
   "headscale_acl.age".publicKeys = [ buoy achuie ];
   "svalbard_tailscale_key.age".publicKeys = [ svalbard achuie ];
 }

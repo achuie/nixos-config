@@ -136,6 +136,12 @@
       btop
       killall
       autossh
+
+      jellyfin
+      jellyfin-web
+      jellyfin-ffmpeg
+      delfin
+      jellyfin-tui
     ];
     pathsToLink = [ "/libexec" ];
   };
@@ -185,10 +191,16 @@
     enable = true;
     openFirewall = true;
     authKeyFile = config.age.secrets.svalbard_tailscale_key.path;
+    # --ssh is broken https://github.com/juanfont/headscale/issues/2674
     extraUpFlags = [
       "--login-server=https://isthmus.huie.dev"
       "--advertise-tags=tag:server"
     ];
+  };
+
+  services.jellyfin = {
+    enable = true;
+    openFirewall = true;
   };
 
   # Enable the OpenSSH daemon.
