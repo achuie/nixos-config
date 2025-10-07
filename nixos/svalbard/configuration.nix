@@ -90,7 +90,7 @@
   users.users = {
     achuie = {
       isNormalUser = true;
-      extraGroups = [ "wheel" "networkmanager" ];
+      extraGroups = [ "wheel" "networkmanager" "syncthing" ];
       shell = pkgs.zsh;
     };
 
@@ -201,6 +201,33 @@
   services.jellyfin = {
     enable = true;
     openFirewall = true;
+  };
+
+  services.syncthing = {
+    enable = true;
+    openDefaultPorts = true;
+  };
+  users.users.syncthing.extraGroups = [ "users" ];
+  # Ensure group read/write permissions
+  systemd.services.syncthing.serviceConfig.UMask = "0007";
+  # Syncthing needs access to user's home
+  systemd.tmpfiles.rules = [
+    "d /home/achuie 0750 achuie syncthing"
+    "d /home/achuie/Sync 2770 achuie syncthing"
+  ];
+  systemd.services.fix-syncthing-perms = {
+    serviceConfig.Type = "oneshot";
+    serviceConfig.User = "achuie";
+    script = ''
+      find "Sync" -type f \( ! -group syncthing -or ! -perm -g=rw \) -not -path "*/.st*" -exec chgrp syncthing {} \; -exec chmod g+rw {} \;
+      find "Sync" -type d \( ! -group syncthing -or ! -perm -g=rwxs \) -not -path "*/.st*" -exec chgrp syncthing {} \; -exec chmod g+rwxs {} \;
+    '';
+    path = [ ];
+  };
+  systemd.timers.fix-syncthing-perms = {
+    wantedBy = [ "timers.target" ];
+    partOf = [ "fix-syncthing-perms.service" ];
+    timerConfig.OnCalendar = "*-*-* *:00:00";
   };
 
   # Enable the OpenSSH daemon.
