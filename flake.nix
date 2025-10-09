@@ -95,6 +95,16 @@
             '';
             meta = { };
           };
+          iosevka-wl =
+            let
+              version = "v0.1.1";
+            in nixpkgs.legacyPackages.${system}.fetchzip {
+                inherit version;
+                pname = "iosevka-wl";
+                url = "https://github.com/achuie/iosevka-wl/releases/download/${version}/iosevka-wl-artifact.zip";
+                hash = "sha256-wWYAXV085qM5sKB+olfWyUkOxHEmGyKNSQFMuk4CUYg=";
+                stripRoot = false;
+              };
         in
         {
           "achuie@nixtest" = home-manager.lib.homeManagerConfiguration {
@@ -121,6 +131,14 @@
               inherit (self) inputs outputs;
             };
             modules = [ ./home-manager/bard/home.nix ];
+          };
+          "achuie@tx" = home-manager.lib.homeManagerConfiguration {
+            pkgs = nixpkgs.legacyPackages.${system};
+            extraSpecialArgs = {
+              inherit (self) inputs outputs;
+              iosevka = iosevka-wl;
+            };
+            modules = [ ./home-manager/achuie/tx.nix ];
           };
         };
     };
