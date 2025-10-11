@@ -83,28 +83,17 @@
             '';
             meta = { };
           };
-          iosevka-dv = nixpkgs.legacyPackages.${system}.stdenvNoCC.mkDerivation {
-            pname = "iosevka-custom";
-            version = "achuie";
-            src = self.inputs.dotfiles;
-            buildPhase = "";
-            installPhase = ''
-              output=$out/share/fonts/truetype
-              mkdir -p $output
-              cp ./nix-flakes/iosevka/Iosevkacustom/* $output
-            '';
-            meta = { };
-          };
           iosevka-wl =
             let
               version = "v0.1.1";
-            in nixpkgs.legacyPackages.${system}.fetchzip {
-                inherit version;
-                pname = "iosevka-wl";
-                url = "https://github.com/achuie/iosevka-wl/releases/download/${version}/iosevka-wl-artifact.zip";
-                hash = "sha256-wWYAXV085qM5sKB+olfWyUkOxHEmGyKNSQFMuk4CUYg=";
-                stripRoot = false;
-              };
+            in
+            nixpkgs.legacyPackages.${system}.fetchzip {
+              inherit version;
+              pname = "iosevka-wl";
+              url = "https://github.com/achuie/iosevka-wl/releases/download/${version}/iosevka-wl-artifact.zip";
+              hash = "sha256-wWYAXV085qM5sKB+olfWyUkOxHEmGyKNSQFMuk4CUYg=";
+              stripRoot = false;
+            };
         in
         {
           "achuie@nixtest" = home-manager.lib.homeManagerConfiguration {
@@ -121,7 +110,7 @@
             extraSpecialArgs = {
               inherit (self) inputs outputs;
               firacode = firacode-dv;
-              iosevka = iosevka-dv;
+              iosevka = iosevka-wl;
             };
             modules = [ ./home-manager/achuie/home.nix ];
           };
