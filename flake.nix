@@ -13,10 +13,6 @@
       url = "github:yaxitech/ragenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    dotfiles = {
-      url = "github:achuie/dotfiles";
-      flake = false;
-    };
     achuie-nvim = {
       url = "github:achuie/config.nvim";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -71,18 +67,17 @@
       homeConfigurations =
         let
           system = "x86_64-linux";
-          firacode-dv = nixpkgs.legacyPackages.${system}.stdenvNoCC.mkDerivation {
-            pname = "firacode-custom";
-            version = "achuie";
-            src = self.inputs.dotfiles;
-            buildPhase = "";
-            installPhase = ''
-              output=$out/share/fonts/truetype
-              mkdir -p $output
-              cp ./nix-flakes/firacode/Fira\ Code\ Custom/* $output
-            '';
-            meta = { };
-          };
+          firacode-kern =
+            let
+              version = "v0.1.0";
+            in
+            nixpkgs.legacyPackages.${system}.fetchzip {
+              inherit version;
+              pname = "firacode-kern";
+              url = "https://github.com/achuie/firacode-kern/releases/download/${version}/firacode-kern-artifact.zip";
+              hash = "";
+              stripRoot = false;
+            };
           iosevka-wl =
             let
               version = "v0.1.1";
@@ -109,7 +104,7 @@
             pkgs = nixpkgs.legacyPackages.${system};
             extraSpecialArgs = {
               inherit (self) inputs outputs;
-              firacode = firacode-dv;
+              firacode = firacode-kern;
               iosevka = iosevka-wl;
             };
             modules = [ ./home-manager/achuie/home.nix ];
