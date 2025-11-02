@@ -108,22 +108,6 @@
         "type": "github"
       }
     },
-    "dotfiles": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1757223624,
-        "narHash": "sha256-zdJSsHxbG//fLfZnXgEaStyBYmuugHtibdIQeneKEyM=",
-        "owner": "achuie",
-        "repo": "dotfiles",
-        "rev": "f657413c008cc9e561389c0f32af03a15a43ca35",
-        "type": "github"
-      },
-      "original": {
-        "owner": "achuie",
-        "repo": "dotfiles",
-        "type": "github"
-      }
-    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -417,7 +401,6 @@
       "inputs": {
         "achuie-nvim": "achuie-nvim",
         "agenix": "agenix",
-        "dotfiles": "dotfiles",
         "home-manager": "home-manager_2",
         "nixos-hardware": "nixos-hardware",
         "nixpkgs": "nixpkgs_2",
