@@ -107,9 +107,12 @@
     };
   };
 
-  programs.zsh = {
-    enable = true;
-    enableGlobalCompInit = false;
+  programs = {
+    zsh.enable = true;
+    firefox = {
+      enable = true;
+      policies.OfferToSaveLogins = false;
+    };
   };
 
   nix = {
@@ -135,7 +138,12 @@
       smartmontools
       btop
       killall
-      autossh
+      inputs.achuie-nvim.packages.${pkgs.system}.nvim
+
+      noto-fonts
+      noto-fonts-cjk-serif
+      noto-fonts-cjk-sans
+      noto-fonts-color-emoji
 
       jellyfin
       jellyfin-web
@@ -238,23 +246,10 @@
     settings = { PasswordAuthentication = false; };
   };
 
-  # Open ports in the firewall.
   networking.firewall = {
     enable = true;
   };
 
-  systemd.services.buoyTunnel = {
-    description = "Start reverse tunnel to buoy, and keep it alive.";
-    wantedBy = [ "multi-user.target" ];
-    wants = [ "network.target" "network-online.target" "sshd.service" ];
-    after = [ "network.target" "network-online.target" "sshd.service" ];
-    serviceConfig = {
-      ExecStart = ''
-        ${pkgs.autossh}/bin/autossh -M 0 -o "ServerAliveInterval 30" -o "ServerAliveCountMax 3" -N -R *:18131:localhost:22 \
-        -i /home/achuie/.ssh/id_ed25519 achuie@164.90.245.94
-      '';
-    };
-  };
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
 

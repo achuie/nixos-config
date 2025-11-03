@@ -75,18 +75,18 @@
               inherit version;
               pname = "firacode-kern";
               url = "https://github.com/achuie/firacode-kern/releases/download/${version}/firacode-kern-artifact.zip";
-              hash = "";
+              hash = "sha256-d3oLQEmaIKxFhPkg/TvsXq8nIfSqfwmqeTHOCUqwgIw=";
               stripRoot = false;
             };
           iosevka-wl =
             let
-              version = "v0.1.1";
+              version = "v0.2.0";
             in
             nixpkgs.legacyPackages.${system}.fetchzip {
               inherit version;
               pname = "iosevka-wl";
               url = "https://github.com/achuie/iosevka-wl/releases/download/${version}/iosevka-wl-artifact.zip";
-              hash = "sha256-wWYAXV085qM5sKB+olfWyUkOxHEmGyKNSQFMuk4CUYg=";
+              hash = "sha256-TeOP1D8J9MrcvCLQx9D2gjokZaALRim+NVUHUOGYFAA=";
               stripRoot = false;
             };
         in
@@ -108,13 +108,6 @@
               iosevka = iosevka-wl;
             };
             modules = [ ./home-manager/achuie/home.nix ];
-          };
-          "bard@svalbard" = home-manager.lib.homeManagerConfiguration {
-            pkgs = nixpkgs.legacyPackages.${system};
-            extraSpecialArgs = {
-              inherit (self) inputs outputs;
-            };
-            modules = [ ./home-manager/bard/home.nix ];
           };
           "achuie@tx" = home-manager.lib.homeManagerConfiguration {
             pkgs = nixpkgs.legacyPackages.${system};
