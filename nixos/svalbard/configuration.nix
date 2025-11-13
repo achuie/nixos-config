@@ -148,7 +148,6 @@
       jellyfin
       jellyfin-web
       jellyfin-ffmpeg
-      delfin
       jellyfin-tui
     ];
     pathsToLink = [ "/libexec" ];
@@ -221,14 +220,14 @@
   systemd.services.syncthing.serviceConfig.UMask = "0007";
   # Syncthing needs access to user's home
   systemd.tmpfiles.rules = [
-    "d /home/achuie 0751 achuie syncthing"
+    "d /home/achuie 0750 achuie syncthing"
     "d /home/achuie/Sync 2770 achuie syncthing"
   ];
   systemd.services.fix-syncthing-perms = {
-    serviceConfig.Type = "oneshot";
+    serviceConfig = { Type = "oneshot"; User = "root"; };
     script = ''
-      find "Sync" -type f \( ! -group syncthing -or ! -perm -g=rw \) -not -path "*/.st*" -exec chgrp syncthing {} \; -exec chmod g+rw {} \;
-      find "Sync" -type d \( ! -group syncthing -or ! -perm -g=rwxs \) -not -path "*/.st*" -exec chgrp syncthing {} \; -exec chmod g+rwxs {} \;
+      find "/home/achuie/Sync" -type f \( ! -group syncthing -or ! -perm -g=rw \) -not -path "*/.st*" -exec chgrp syncthing {} \; -exec chmod g+rw {} \;
+      find "/home/achuie/Sync" -type d \( ! -group syncthing -or ! -perm -g=rwxs \) -not -path "*/.st*" -exec chgrp syncthing {} \; -exec chmod g+rwxs {} \;
     '';
     path = [ ];
   };
