@@ -132,6 +132,28 @@
           reverse_proxy * 127.0.0.1:8080
         '';
       };
+
+      "eccleston.huie.dev" = {
+        extraConfig = ''
+          encode zstd gzip
+
+          # Block search engine indexing at the HTTP layer as well
+          header X-Robots-Tag "noindex, nofollow, noarchive"
+
+          # Basic security headers
+          header X-Frame-Options "DENY"
+          header X-Content-Type-Options "nosniff"
+
+          # Full-site Basic Auth — nothing is served without credentials
+          basicauth {
+            guest $2a$14$t3OdtCfXVlqZ.jE6gd4feu3GZ/Z6mqXk0jg2x53ZU12/iCdI3rWEK
+          }
+
+          root * /srv/eccleston
+          file_server
+        '';
+      };
+      "www.eccleston.huie.dev" = { extraConfig = "redir https://eccleston.huie.dev{uri}"; };
     };
   };
   systemd.services.caddy.serviceConfig.EnvironmentFile = [ config.age.secrets.porkbun_api.path ];
