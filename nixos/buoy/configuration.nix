@@ -149,6 +149,8 @@
             guest $2a$14$t3OdtCfXVlqZ.jE6gd4feu3GZ/Z6mqXk0jg2x53ZU12/iCdI3rWEK
           }
 
+          try_files {path} {path}/ /404.html
+
           root * /srv/eccleston
           file_server
         '';
