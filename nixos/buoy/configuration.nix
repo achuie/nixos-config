@@ -60,11 +60,23 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment = {
-    systemPackages = with pkgs; [ vim git lynx fd ripgrep rsync ];
+    systemPackages = with pkgs; [ vim git lynx fd ripgrep rsync wireguard-tools ];
     pathsToLink = [ "/libexec" ];
   };
 
   security.rtkit.enable = true;
+
+  networking.wg-quick.interfaces.wg-leelawadee = {
+    address = [ "10.77.0.1/24" ];
+    listenPort = 51820;
+    privateKeyFile = "/etc/wireguard/buoy-leelawadee-private.key";
+    peers = [
+      {
+        publicKey = "xGbrYUqgt6kaWXxEvCUI9DuaYxmtBrCImDF6XFVl9nU=";
+        allowedIPs = [ "10.77.0.2/32" ];
+      }
+    ];
+  };
 
   services.caddy = {
     enable = true;
@@ -156,6 +168,19 @@
         '';
       };
       "www.eccleston.huie.dev" = { extraConfig = "redir https://eccleston.huie.dev{uri}"; };
+
+      "saphan.huie.dev" = {
+        extraConfig = ''
+          reverse_proxy * 10.77.0.2:8080
+        '';
+      };
+
+      "sombatkuakul.huie.dev" = {
+        extraConfig = ''
+          reverse_proxy * 10.77.0.2:3000
+        '';
+      };
+      "www.sombatkuakul.huie.dev" = { extraConfig = "redir https://sombatkuakul.huie.dev{uri}"; };
     };
   };
   systemd.services.caddy.serviceConfig.EnvironmentFile = [ config.age.secrets.porkbun_api.path ];
@@ -190,6 +215,7 @@
   networking.firewall = {
     enable = true;
     allowedTCPPorts = [ 18131 80 443 ];
+    allowedUDPPorts = [ 51820 ];
   };
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
