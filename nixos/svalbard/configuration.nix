@@ -207,7 +207,16 @@
 
   services.jellyfin = {
     enable = true;
-    openFirewall = true;
+    openFirewall = false;
+  };
+
+  services.caddy = {
+    enable = true;
+    virtualHosts."http://jellyfin.svalbard.tn.huie.dev" = {
+      extraConfig = ''
+        reverse_proxy 127.0.0.1:8096
+      '';
+    };
   };
 
   services.syncthing = {
@@ -247,6 +256,7 @@
 
   networking.firewall = {
     enable = true;
+    interfaces.tailscale0.allowedTCPPorts = [ 80 ];
   };
 
   # networking.firewall.allowedUDPPorts = [ ... ];
@@ -276,4 +286,3 @@
   system.stateVersion = "23.11"; # Did you read the comment?
 
 }
-

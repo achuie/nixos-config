@@ -192,6 +192,13 @@
       dns = {
         base_domain = "tn.huie.dev";
         nameservers.global = [ "1.1.1.1" ];
+        extra_records= [
+          {
+            name = "jellyfin.svalbard.tn.huie.dev";
+            type = "A";
+            value = "100.64.0.4";
+          }
+        ];
       };
       policy.path = config.age.secrets.headscale_acl.path;
     };
