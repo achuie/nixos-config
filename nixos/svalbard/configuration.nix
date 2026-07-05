@@ -212,7 +212,7 @@
 
   services.caddy = {
     enable = true;
-    virtualHosts."http://jellyfin.svalbard.tn.huie.dev" = {
+    virtualHosts."jellyfin.svalbard.tn.huie.dev" = {
       extraConfig = ''
         reverse_proxy 127.0.0.1:8096
       '';
@@ -256,7 +256,7 @@
 
   networking.firewall = {
     enable = true;
-    interfaces.tailscale0.allowedTCPPorts = [ 80 ];
+    interfaces.tailscale0.allowedTCPPorts = [ 80 443 ];
   };
 
   # networking.firewall.allowedUDPPorts = [ ... ];
