@@ -217,17 +217,12 @@
         reverse_proxy 127.0.0.1:8096
       '';
     };
-    virtualHosts."http://syncthing.svalbard.tn.home.arpa" = {
-      extraConfig = ''
-        reverse_proxy 127.0.0.1:8384
-      '';
-    };
   };
 
   services.syncthing = {
     enable = true;
     openDefaultPorts = true;
-    guiAddress = "127.0.0.1:8384";
+    guiAddress = "0.0.0.0:8384";
   };
   users.users.syncthing.extraGroups = [ "users" ];
   # Ensure group read/write permissions

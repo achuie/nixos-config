@@ -198,11 +198,6 @@
             type = "A";
             value = "100.64.0.4";
           }
-          {
-            name = "syncthing.svalbard.tn.home.arpa";
-            type = "A";
-            value = "100.64.0.4";
-          }
         ];
       };
       policy.path = config.age.secrets.headscale_acl.path;
