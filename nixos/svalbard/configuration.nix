@@ -212,7 +212,7 @@
 
   services.caddy = {
     enable = true;
-    virtualHosts."http://jellyfin.svalbard.tn.huie.dev" = {
+    virtualHosts."http://jellyfin.svalbard.tn.home.arpa" = {
       extraConfig = ''
         reverse_proxy 127.0.0.1:8096
       '';

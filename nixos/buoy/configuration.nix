@@ -190,11 +190,11 @@
     settings = {
       server_url = "https://isthmus.huie.dev:443";
       dns = {
-        base_domain = "tn.huie.dev";
+        base_domain = "tn.home.arpa";
         nameservers.global = [ "1.1.1.1" ];
-        extra_records= [
+        extra_records = [
           {
-            name = "jellyfin.svalbard.tn.huie.dev";
+            name = "jellyfin.svalbard.tn.home.arpa";
             type = "A";
             value = "100.64.0.4";
           }
