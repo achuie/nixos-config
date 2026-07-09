@@ -203,6 +203,11 @@
             type = "A";
             value = "100.64.0.5";
           }
+          {
+            name = "immich.citadel.tn.home.arpa";
+            type = "A";
+            value = "100.64.0.5";
+          }
         ];
       };
       policy.path = config.age.secrets.headscale_acl.path;
