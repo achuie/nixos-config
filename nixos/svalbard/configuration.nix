@@ -258,8 +258,10 @@
       description = "llama.cpp OpenAI-compatible server";
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];
-      requiresMountsFor = [ "/share/llm" ];
-      unitConfig.ConditionPathExists = "/share/llm/models/gemma4-current.gguf";
+      unitConfig = {
+        ConditionPathExists = "/share/llm/models/gemma4-current.gguf";
+        RequiresMountsFor = "/share/llm";
+      };
 
       serviceConfig = {
         User = "llama";
