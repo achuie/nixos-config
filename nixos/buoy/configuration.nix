@@ -199,6 +199,11 @@
             value = "100.64.0.4";
           }
           {
+            name = "llm.svalbard.tn.home.arpa";
+            type = "A";
+            value = "100.64.0.4";
+          }
+          {
             name = "jellyfin.citadel.tn.home.arpa";
             type = "A";
             value = "100.64.0.5";
