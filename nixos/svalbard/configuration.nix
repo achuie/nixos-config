@@ -105,7 +105,14 @@
       extraGroups = [ "networkmanager" ];
       shell = pkgs.zsh;
     };
+
+    llama = {
+      isSystemUser = true;
+      group = "llama";
+      extraGroups = [ "render" "video" ];
+    };
   };
+  users.groups.llama = { };
 
   programs = {
     zsh.enable = true;
@@ -212,10 +219,17 @@
 
   services.caddy = {
     enable = true;
-    virtualHosts."http://jellyfin.svalbard.tn.home.arpa" = {
-      extraConfig = ''
-        reverse_proxy 127.0.0.1:8096
-      '';
+    virtualHosts = {
+      "http://jellyfin.svalbard.tn.home.arpa" = {
+        extraConfig = ''
+          reverse_proxy 127.0.0.1:8096
+          '';
+      };
+      "http://llm.svalbard.tn.home.arpa" = {
+        extraConfig = ''
+          reverse_proxy 127.0.0.1:8080
+          '';
+      };
     };
   };
 
@@ -227,11 +241,35 @@
   users.users.syncthing.extraGroups = [ "users" ];
   # Ensure group read/write permissions
   systemd.services.syncthing.serviceConfig.UMask = "0007";
-  # Syncthing needs access to user's home
   systemd.tmpfiles.rules = [
+    # Syncthing needs access to user's home
     "d /home/achuie 0750 achuie syncthing"
     "d /home/achuie/Sync 2770 achuie syncthing"
+    # Create directories required for llama-server
+    "d /share/llm 0750 llama llama -"
+    "d /share/llm/models 0750 llama llama -"
   ];
+
+  systemd.services.llama-server =
+    let
+      llama-cpp-vulkan = pkgs.llama-cpp.override { vulkanSupport = true; };
+    in
+    {
+      description = "llama.cpp OpenAI-compatible server";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" ];
+      requiresMountsFor = [ "/share/llm" ];
+      unitConfig.ConditionPathExists = "/share/llm/models/gemma4-current.gguf";
+
+      serviceConfig = {
+        User = "llama";
+        Group = "llama";
+        Restart = "on-failure";
+        RestartSec = "5s";
+        WorkingDirectory = "/share/llm";
+        ExecStart = "${llama-cpp-vulkan}/bin/llama-server --host 127.0.0.1 --port 8080 --model /share/llm/models/gemma4-current.gguf --alias gemma4 --ctx-size 4096 --n-gpu-layers 10";
+      };
+    };
   systemd.services.fix-syncthing-perms = {
     serviceConfig = { Type = "oneshot"; User = "root"; };
     script = ''
