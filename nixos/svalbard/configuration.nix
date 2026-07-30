@@ -143,6 +143,8 @@
       rsync
       pciutils
       smartmontools
+      vulkan-tools
+      radeontop
       btop
       killall
       inputs.achuie-nvim.packages.${pkgs.system}.nvim
