@@ -246,8 +246,8 @@
     "d /home/achuie 0750 achuie syncthing"
     "d /home/achuie/Sync 2770 achuie syncthing"
     # Create directories required for llama-server
-    "d /share/llm 0750 llama llama -"
-    "d /share/llm/models 0750 llama llama -"
+    "d /var/lib/llama 0750 llama llama -"
+    "d /var/lib/llama/models 0750 llama llama -"
   ];
 
   systemd.services.llama-server =
@@ -259,8 +259,7 @@
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];
       unitConfig = {
-        ConditionPathExists = "/share/llm/models/gemma4-current.gguf";
-        RequiresMountsFor = "/share/llm";
+        ConditionPathExists = "/var/lib/llama/models/gemma4-current.gguf";
       };
 
       serviceConfig = {
@@ -268,8 +267,8 @@
         Group = "llama";
         Restart = "on-failure";
         RestartSec = "5s";
-        WorkingDirectory = "/share/llm";
-        ExecStart = "${llama-cpp-vulkan}/bin/llama-server --host 127.0.0.1 --port 8080 --model /share/llm/models/gemma4-current.gguf --alias gemma4 --ctx-size 4096 --n-gpu-layers 10";
+        WorkingDirectory = "/var/lib/llama";
+        ExecStart = "${llama-cpp-vulkan}/bin/llama-server --host 127.0.0.1 --port 8080 --model /var/lib/llama/models/gemma4-current.gguf --alias gemma4 --ctx-size 4096 --n-gpu-layers 10";
       };
     };
   systemd.services.fix-syncthing-perms = {
