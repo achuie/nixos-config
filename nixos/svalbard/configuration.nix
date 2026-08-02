@@ -235,14 +235,6 @@
     };
   };
 
-  services.syncthing = {
-    enable = true;
-    openDefaultPorts = true;
-    guiAddress = "0.0.0.0:8384";
-  };
-  users.users.syncthing.extraGroups = [ "users" ];
-  # Ensure group read/write permissions
-  systemd.services.syncthing.serviceConfig.UMask = "0007";
   systemd.tmpfiles.rules = [
     # Syncthing needs access to user's home
     "d /home/achuie 0750 achuie syncthing"
@@ -251,6 +243,28 @@
     "d /var/lib/llama 0750 llama llama -"
     "d /var/lib/llama/models 0750 llama llama -"
   ];
+
+  services.syncthing = {
+    enable = true;
+    openDefaultPorts = true;
+    guiAddress = "0.0.0.0:8384";
+  };
+  users.users.syncthing.extraGroups = [ "users" ];
+  # Ensure group read/write permissions
+  systemd.services.syncthing.serviceConfig.UMask = "5007";
+  systemd.services.fix-syncthing-perms = {
+    serviceConfig = { Type = "oneshot"; User = "root"; };
+    script = ''
+      find "/home/achuie/Sync" -type f \( ! -group syncthing -or ! -perm -g=rw \) -not -path "*/.st*" -exec chgrp syncthing {} \; -exec chmod g+rw {} \;
+      find "/home/achuie/Sync" -type d \( ! -group syncthing -or ! -perm -g=rwxs \) -not -path "*/.st*" -exec chgrp syncthing {} \; -exec chmod g+rwxs {} \;
+    '';
+    path = [ ];
+  };
+  systemd.timers.fix-syncthing-perms = {
+    wantedBy = [ "timers.target" ];
+    partOf = [ "fix-syncthing-perms.service" ];
+    timerConfig.OnCalendar = "*-*-* *:00:00";
+  };
 
   systemd.services.llama-server =
     let
@@ -273,19 +287,6 @@
         ExecStart = "${llama-cpp-vulkan}/bin/llama-server --host 127.0.0.1 --port 8080 --model /var/lib/llama/models/gemma4-current.gguf --alias gemma4 --ctx-size 4096 --n-gpu-layers 10";
       };
     };
-  systemd.services.fix-syncthing-perms = {
-    serviceConfig = { Type = "oneshot"; User = "root"; };
-    script = ''
-      find "/home/achuie/Sync" -type f \( ! -group syncthing -or ! -perm -g=rw \) -not -path "*/.st*" -exec chgrp syncthing {} \; -exec chmod g+rw {} \;
-      find "/home/achuie/Sync" -type d \( ! -group syncthing -or ! -perm -g=rwxs \) -not -path "*/.st*" -exec chgrp syncthing {} \; -exec chmod g+rwxs {} \;
-    '';
-    path = [ ];
-  };
-  systemd.timers.fix-syncthing-perms = {
-    wantedBy = [ "timers.target" ];
-    partOf = [ "fix-syncthing-perms.service" ];
-    timerConfig.OnCalendar = "*-*-* *:00:00";
-  };
 
   # Enable the OpenSSH daemon.
   services.openssh = {
