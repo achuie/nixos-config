@@ -275,7 +275,10 @@
       wantedBy = [ "multi-user.target" ];
       after = [ "network.target" ];
       unitConfig = {
-        ConditionPathExists = "/var/lib/llama/models/gemma4-current.gguf";
+        ConditionPathExists = [
+          "/var/lib/llama/models/gemma4-current.gguf"
+          "/var/lib/llama/models/gemma4-current-mmproj.gguf"
+        ];
       };
 
       serviceConfig = {
@@ -284,7 +287,7 @@
         Restart = "on-failure";
         RestartSec = "5s";
         WorkingDirectory = "/var/lib/llama";
-        ExecStart = "${llama-cpp-vulkan}/bin/llama-server --host 127.0.0.1 --port 8080 --model /var/lib/llama/models/gemma4-current.gguf --alias gemma4 --ctx-size 4096 --n-gpu-layers 10";
+        ExecStart = "${llama-cpp-vulkan}/bin/llama-server --host 127.0.0.1 --port 8080 --model /var/lib/llama/models/gemma4-current.gguf --mmproj /var/lib/llama/models/gemma4-current-mmproj.gguf --alias gemma4 --ctx-size 4096 --n-gpu-layers 10";
       };
     };
 
