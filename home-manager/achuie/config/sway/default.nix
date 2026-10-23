@@ -56,7 +56,9 @@ in
   programs = {
     swayimg = {
       enable = true;
-      settings = { viewer = { window = "#ffffffff"; }; };
+      initLua = ''
+        viewer.window = '#ffffffff'
+      '';
     };
   };
   services = {

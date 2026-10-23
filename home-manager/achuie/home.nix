@@ -47,8 +47,10 @@
     git = {
       enable = true;
       lfs.enable = true;
-      userName = "achuie";
-      userEmail = "achuie@protonmail.com";
+      settings.user = {
+        name = "achuie";
+        email = "achuie@protonmail.com";
+      };
     };
     firefox = {
       enable = true;
