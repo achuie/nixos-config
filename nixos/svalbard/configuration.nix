@@ -105,7 +105,14 @@
       extraGroups = [ "networkmanager" ];
       shell = pkgs.zsh;
     };
+
+    llama = {
+      isSystemUser = true;
+      group = "llama";
+      extraGroups = [ "render" "video" ];
+    };
   };
+  users.groups.llama = { };
 
   programs = {
     zsh.enable = true;
@@ -136,6 +143,8 @@
       rsync
       pciutils
       smartmontools
+      vulkan-tools
+      radeontop
       btop
       killall
       inputs.achuie-nvim.packages.${pkgs.system}.nvim
@@ -212,12 +221,28 @@
 
   services.caddy = {
     enable = true;
-    virtualHosts."http://jellyfin.svalbard.tn.home.arpa" = {
-      extraConfig = ''
-        reverse_proxy 127.0.0.1:8096
-      '';
+    virtualHosts = {
+      "http://jellyfin.svalbard.tn.home.arpa" = {
+        extraConfig = ''
+          reverse_proxy 127.0.0.1:8096
+          '';
+      };
+      "http://llm.svalbard.tn.home.arpa" = {
+        extraConfig = ''
+          reverse_proxy 127.0.0.1:8080
+          '';
+      };
     };
   };
+
+  systemd.tmpfiles.rules = [
+    # Syncthing needs access to user's home
+    "d /home/achuie 0750 achuie syncthing"
+    "d /home/achuie/Sync 2770 achuie syncthing"
+    # Create directories required for llama-server
+    "d /var/lib/llama 0750 llama llama -"
+    "d /var/lib/llama/models 0750 llama llama -"
+  ];
 
   services.syncthing = {
     enable = true;
@@ -226,12 +251,7 @@
   };
   users.users.syncthing.extraGroups = [ "users" ];
   # Ensure group read/write permissions
-  systemd.services.syncthing.serviceConfig.UMask = "0007";
-  # Syncthing needs access to user's home
-  systemd.tmpfiles.rules = [
-    "d /home/achuie 0750 achuie syncthing"
-    "d /home/achuie/Sync 2770 achuie syncthing"
-  ];
+  systemd.services.syncthing.serviceConfig.UMask = "5007";
   systemd.services.fix-syncthing-perms = {
     serviceConfig = { Type = "oneshot"; User = "root"; };
     script = ''
@@ -245,6 +265,31 @@
     partOf = [ "fix-syncthing-perms.service" ];
     timerConfig.OnCalendar = "*-*-* *:00:00";
   };
+
+  systemd.services.llama-server =
+    let
+      llama-cpp-vulkan = pkgs.llama-cpp.override { vulkanSupport = true; };
+    in
+    {
+      description = "llama.cpp OpenAI-compatible server";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "network.target" ];
+      unitConfig = {
+        ConditionPathExists = [
+          "/var/lib/llama/models/gemma4-current.gguf"
+          "/var/lib/llama/models/gemma4-current-mmproj.gguf"
+        ];
+      };
+
+      serviceConfig = {
+        User = "llama";
+        Group = "llama";
+        Restart = "on-failure";
+        RestartSec = "5s";
+        WorkingDirectory = "/var/lib/llama";
+        ExecStart = "${llama-cpp-vulkan}/bin/llama-server --host 127.0.0.1 --port 8080 --model /var/lib/llama/models/gemma4-current.gguf --mmproj /var/lib/llama/models/gemma4-current-mmproj.gguf --alias gemma4 --ctx-size 4096 --n-gpu-layers 10";
+      };
+    };
 
   # Enable the OpenSSH daemon.
   services.openssh = {
